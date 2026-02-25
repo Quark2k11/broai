@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Bro AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+:root{--c:#00FFFF;--d:#000;--d2:#0A0A1A;--d3:#0D0D2B;--g:#888;--gr:#00FF88;--r:#FF4444;--o:#FF8800;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Rajdhani',sans-serif;}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;position:fixed;inset:0;}
+.screen.active{display:flex;}
+
+/* HOME */
+#homeScreen{background:radial-gradient(ellipse at center,#0D0D2B,#000);justify-content:center;align-items:center;gap:20px;}
+.logo{font-family:'Orbitron',monospace;font-size:52px;font-weight:900;color:var(--c);letter-spacing:8px;animation:glow 2s infinite;}
+@keyframes glow{0%,100%{text-shadow:0 0 30px #00FFFF80}50%{text-shadow:0 0 60px #00FFFF}}
+.sub-title{color:var(--g);font-size:12px;letter-spacing:5px;margin-bottom:10px;}
+.home-btn{width:80%;max-width:300px;height:54px;border:none;border-radius:30px;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;}
+.home-btn.primary{background:var(--c);color:#000;}
+.home-btn.secondary{background:transparent;color:var(--c);border:2px solid var(--c);}
+
+/* TOP BAR */
+.topbar{display:flex;align-items:center;padding:10px 12px;background:var(--d3);border-bottom:1px solid rgba(0,255,255,0.15);min-height:52px;gap:8px;flex-shrink:0;}
+.topbar-title{font-family:'Orbitron',monospace;font-size:13px;color:var(--c);font-weight:700;flex:1;}
+.back-btn{background:none;border:none;color:var(--c);font-size:22px;cursor:pointer;padding:2px 6px;}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--gr);animation:blink 1.5s infinite;flex-shrink:0;}
+.status-dot.red{background:var(--r);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.model-badge{font-size:9px;color:var(--o);background:rgba(255,136,0,0.12);border:1px solid rgba(255,136,0,0.4);border-radius:10px;padding:2px 8px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ═══ BROBOT FACE SCREEN ═══ */
+#brobotScreen{background:#000;}
+#faceArea{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;background:#000;}
+
+/* Eyes */
+.eyes-row{display:flex;gap:44px;align-items:center;}
+.eye{width:100px;height:100px;border-radius:50%;background:var(--c);position:relative;overflow:hidden;box-shadow:0 0 40px rgba(0,255,255,0.8);transition:background 0.3s,box-shadow 0.3s;}
+.eye.blink{height:6px!important;border-radius:3px!important;}
+.pupil{position:absolute;width:40px;height:40px;background:#000;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);transition:transform 0.3s;}
+.shine{position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:18%;left:58%;opacity:0.85;}
+.emo-label{font-family:'Orbitron',monospace;font-size:11px;color:var(--c);letter-spacing:4px;opacity:0.6;margin-bottom:18px;}
+
+/* Subtitle — 45px below eyes, width = 100+44+100 = 244px */
+.subtitle-area{margin-top:45px;width:244px;min-height:50px;text-align:center;}
+.subtitle-text{font-size:15px;color:#fff;line-height:1.6;word-break:break-word;}
+.listening-indicator{font-size:11px;color:var(--gr);font-family:'Orbitron',monospace;letter-spacing:2px;margin-top:8px;min-height:18px;}
+
+/* Fullscreen button */
+.fullscreen-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,255,255,0.3);color:var(--c);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:15px;}
+
+/* Bottom controls bar on brobot */
+#brobotBar{display:flex;align-items:center;padding:10px 14px;background:var(--d3);border-top:1px solid rgba(0,255,255,0.15);gap:10px;flex-shrink:0;}
+.bar-btn{flex:1;height:44px;border:none;border-radius:10px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.bar-btn.cyan{background:var(--c);color:#000;}
+.bar-btn.outline{background:transparent;color:var(--c);border:1px solid var(--c);}
+.bar-btn.red{background:rgba(255,68,68,0.15);color:var(--r);border:1px solid var(--r);}
+
+/* Fullscreen overlay */
+#fsOverlay{display:none;position:fixed;inset:0;z-index:999;background:#000;flex-direction:column;justify-content:center;align-items:center;}
+#fsOverlay.show{display:flex;}
+.fs-exit{position:absolute;top:14px;right:14px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,255,255,0.3);color:var(--c);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:15px;}
+.fs-eyes{display:flex;gap:44px;}
+.fs-eye{width:110px;height:110px;border-radius:50%;background:var(--c);position:relative;overflow:hidden;box-shadow:0 0 50px rgba(0,255,255,0.9);transition:background 0.3s,box-shadow 0.3s;}
+.fs-eye.blink{height:6px!important;border-radius:3px!important;}
+.fs-pupil{position:absolute;width:44px;height:44px;background:#000;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);transition:transform 0.3s;}
+.fs-shine{position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:18%;left:58%;opacity:0.85;}
+/* fs subtitle: 45px below fs eyes (110+44+110 = 264px wide) */
+.fs-sub-area{margin-top:45px;width:264px;min-height:50px;text-align:center;}
+.fs-sub-text{font-size:16px;color:#fff;line-height:1.6;word-break:break-word;}
+.fs-listen{font-size:11px;color:var(--gr);font-family:'Orbitron',monospace;letter-spacing:2px;margin-top:8px;min-height:18px;}
+.fs-emo{font-family:'Orbitron',monospace;font-size:11px;color:var(--c);letter-spacing:4px;opacity:0.6;margin-bottom:18px;}
+
+/* ═══ CHAT SCREEN ═══ */
+#chatScreen{background:#000;}
+.chat-outer{flex:1;display:flex;overflow:hidden;}
+.sidebar{width:0;overflow:hidden;background:var(--d2);border-right:1px solid rgba(0,255,255,0.1);transition:width 0.3s;flex-shrink:0;display:flex;flex-direction:column;}
+.sidebar.open{width:230px;}
+.sb-head{padding:12px;border-bottom:1px solid rgba(0,255,255,0.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.sb-title{font-family:'Orbitron',monospace;font-size:11px;color:var(--c);}
+.sb-new{background:var(--c);color:#000;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Orbitron',monospace;}
+.sb-list{flex:1;overflow-y:auto;padding:8px;}
+.sb-item{padding:10px;border-radius:10px;margin-bottom:4px;cursor:pointer;border:1px solid transparent;}
+.sb-item:hover,.sb-item.active{background:rgba(0,255,255,0.08);border-color:rgba(0,255,255,0.2);}
+.sb-name{font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:20px;}
+.sb-date{font-size:10px;color:var(--g);margin-top:2px;}
+.sb-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--r);font-size:13px;cursor:pointer;}
+.sb-item{position:relative;}
+.chat-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#msgList{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:86%;padding:11px 15px;border-radius:18px;font-size:15px;line-height:1.5;word-break:break-word;}
+.msg.user{align-self:flex-end;background:var(--c);color:#000;font-weight:600;border-bottom-right-radius:4px;}
+.msg.bot{align-self:flex-start;background:var(--d3);border:1px solid rgba(0,255,255,0.15);border-bottom-left-radius:4px;}
+.msg.sys{align-self:center;background:rgba(0,255,255,0.04);color:var(--g);font-size:12px;border-radius:12px;text-align:center;max-width:90%;padding:8px 14px;}
+.typing{display:none;padding:0 12px 4px;flex-shrink:0;}
+.typing-inner{display:inline-flex;background:var(--d3);border:1px solid rgba(0,255,255,0.15);border-radius:18px;padding:12px 16px;gap:5px;}
+.typing-inner span{width:7px;height:7px;border-radius:50%;background:var(--c);animation:tdot 1.2s infinite;}
+.typing-inner span:nth-child(2){animation-delay:.2s}.typing-inner span:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.input-bar{display:flex;align-items:center;padding:8px 10px 10px;background:var(--d3);border-top:1px solid rgba(0,255,255,0.15);gap:8px;flex-shrink:0;}
+#chatInput{flex:1;background:#111830;border:2px solid rgba(0,255,255,0.3);border-radius:24px;padding:11px 16px;color:#fff;font-size:16px;font-family:'Rajdhani',sans-serif;outline:none;min-width:0;}
+#chatInput:focus{border-color:var(--c);}
+#chatInput::placeholder{color:#444;}
+.mic-btn{width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;background:var(--d2);color:var(--c);border:1px solid rgba(0,255,255,0.3);flex-shrink:0;}
+.send-btn{width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;font-size:18px;background:var(--c);color:#000;flex-shrink:0;}
+
+/* ═══ SETTINGS SCREEN ═══ */
+#settingsScreen{background:#000;overflow-y:auto;}
+.settings-body{padding:14px;display:flex;flex-direction:column;gap:8px;}
+.sgroup{font-family:'Orbitron',monospace;font-size:10px;color:var(--c);letter-spacing:3px;opacity:0.7;margin:8px 0 4px;}
+.srow{display:flex;align-items:center;justify-content:space-between;background:var(--d3);border:1px solid rgba(0,255,255,0.08);border-radius:12px;padding:12px 14px;gap:10px;}
+.srow-label{font-size:15px;font-weight:600;}
+.srow-desc{font-size:11px;color:var(--g);margin-top:2px;}
+.toggle{width:46px;height:24px;background:var(--d2);border-radius:12px;border:1px solid rgba(0,255,255,0.25);position:relative;cursor:pointer;transition:all 0.3s;flex-shrink:0;}
+.toggle.on{background:var(--c);border-color:var(--c);}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all 0.3s;}
+.toggle.on::after{left:24px;}
+.sselect{background:var(--d2);border:1px solid rgba(0,255,255,0.25);color:var(--c);border-radius:8px;padding:6px 10px;font-family:'Rajdhani',sans-serif;font-size:13px;outline:none;}
+.sinput{width:100%;background:var(--d3);border:1px solid rgba(0,255,255,0.25);border-radius:10px;padding:10px 14px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:15px;outline:none;margin-bottom:6px;}
+.sbtn{width:100%;height:44px;background:var(--c);color:#000;border:none;border-radius:10px;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-bottom:4px;}
+.sbtn.gray{background:#111;color:var(--g);border:1px solid #333;}
+.sbtn.red{background:rgba(255,68,68,0.1);color:var(--r);border:1px solid rgba(255,68,68,0.3);}
+.mrow{display:flex;justify-content:space-between;align-items:center;background:var(--d3);border-radius:8px;padding:8px 12px;margin-bottom:3px;font-size:12px;}
+.mbadge{font-size:10px;padding:2px 8px;border-radius:8px;font-family:'Orbitron',monospace;}
+.mbadge.ok{background:rgba(0,255,136,0.1);color:var(--gr);border:1px solid rgba(0,255,136,0.3);}
+.mbadge.skip{background:rgba(255,68,68,0.1);color:var(--r);border:1px solid rgba(255,68,68,0.3);}
+.mbadge.nokey{background:rgba(80,80,80,0.1);color:#555;border:1px solid #333;}
+#voiceInfoBox{font-size:11px;color:var(--gr);background:var(--d3);border-radius:8px;padding:10px;display:none;line-height:1.8;margin-top:4px;}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(0,255,255,0.25);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="homeScreen" class="screen active">
+  <div class="logo">Bro AI</div>
+  <div class="sub-title">Your AI Companion · Robot Brain</div>
+  <button class="home-btn primary" onclick="showScreen('brobotScreen')">🤖 &nbsp;Bro Bot</button>
+  <button class="home-btn secondary" onclick="showScreen('chatScreen')">💬 &nbsp;Bro AI Chat</button>
+  <button onclick="showScreen('settingsScreen')" style="background:none;border:none;color:var(--g);font-size:12px;margin-top:10px;cursor:pointer;letter-spacing:2px;">⚙ SETTINGS</button>
+  <div style="font-size:10px;color:#222;margin-top:14px;letter-spacing:3px;">v7.0 · SAY HEY BRO</div>
+</div>
+
+<!-- BROBOT FACE -->
+<div id="brobotScreen" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="showScreen('homeScreen')">←</button>
+    <div class="topbar-title">Bro Bot</div>
+    <div id="listenStatus" style="font-size:10px;color:var(--g);font-family:'Orbitron',monospace;letter-spacing:1px;">MIC OFF</div>
+    <div class="status-dot red" id="botDot"></div>
+  </div>
+
+  <div id="faceArea">
+    <button class="fullscreen-btn" onclick="openFS()">⛶</button>
+    <div class="emo-label" id="emoLabel">NEUTRAL</div>
+    <div class="eyes-row">
+      <div class="eye" id="eyeL"><div class="pupil" id="pupL"></div><div class="shine"></div></div>
+      <div class="eye" id="eyeR"><div class="pupil" id="pupR"></div><div class="shine"></div></div>
+    </div>
+    <div class="subtitle-area">
+      <div class="subtitle-text" id="subtitleText">Hello! I am Bro Bot.</div>
+      <div class="listening-indicator" id="listenLabel"></div>
+    </div>
+  </div>
+
+  <div id="brobotBar">
+    <button class="bar-btn cyan" id="voiceToggleBtn" onclick="toggleBotVoice()">🎤 ENABLE VOICE</button>
+    <button class="bar-btn outline" onclick="showScreen('settingsScreen')">⚙ SETTINGS</button>
+    <button class="bar-btn outline" onclick="openFS()">⛶ FULL</button>
+  </div>
+</div>
+
+<!-- FULLSCREEN OVERLAY -->
+<div id="fsOverlay">
+  <button class="fs-exit" onclick="closeFS()">⛶</button>
+  <div class="fs-emo" id="fsEmo">NEUTRAL</div>
+  <div class="fs-eyes">
+    <div class="fs-eye" id="fsEyeL"><div class="fs-pupil" id="fsPupL"></div><div class="fs-shine"></div></div>
+    <div class="fs-eye" id="fsEyeR"><div class="fs-pupil" id="fsPupR"></div><div class="fs-shine"></div></div>
+  </div>
+  <div class="fs-sub-area">
+    <div class="fs-sub-text" id="fsSub">Hello! I am Bro Bot.</div>
+    <div class="fs-listen" id="fsListen"></div>
+  </div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chatScreen" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="toggleSidebar()">☰</button>
+    <button class="back-btn" onclick="showScreen('homeScreen')">←</button>
+    <div class="topbar-title">Bro AI</div>
+    <div class="model-badge" id="modelBadge">READY</div>
+    <div class="status-dot"></div>
+  </div>
+  <div class="chat-outer">
+    <div class="sidebar" id="sidebar">
+      <div class="sb-head">
+        <div class="sb-title">HISTORY</div>
+        <button class="sb-new" onclick="newChat()">+ NEW</button>
+      </div>
+      <div class="sb-list" id="sbList"></div>
+    </div>
+    <div class="chat-main">
+      <div id="msgList">
+        <div class="msg sys">Bro AI ready! Type or tap 🎤 to talk.<br>Say <b style="color:var(--c)">Hey Bro</b> anytime!</div>
+      </div>
+      <div class="typing" id="typingDiv"><div class="typing-inner"><span></span><span></span><span></span></div></div>
+      <div class="input-bar">
+        <button class="mic-btn" id="chatMicBtn" onclick="chatMic()">🎤</button>
+        <input id="chatInput" type="text" placeholder="Ask Bro AI..." onkeypress="if(event.key==='Enter'){event.preventDefault();sendChat();}">
+        <button class="send-btn" onclick="sendChat()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settingsScreen" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="showScreen('homeScreen')">←</button>
+    <div class="topbar-title">Settings</div>
+  </div>
+  <div class="settings-body">
+    <div class="sgroup">API KEYS (FREE)</div>
+    <input type="password" class="sinput" id="kG" placeholder="Gemini Key — AIzaSy...">
+    <input type="password" class="sinput" id="kGH" placeholder="GitHub AI Key — free with GitHub">
+    <button class="sbtn" onclick="saveKeys()">💾 SAVE KEYS</button>
+    <div id="keyMsg" style="text-align:center;font-size:12px;color:var(--gr);min-height:18px;"></div>
+
+    <div class="sgroup">MODEL QUEUE</div>
+    <div id="modelList"></div>
+    <button class="sbtn gray" onclick="resetSkip()">🔄 RESET QUOTA SKIPS</button>
+
+    <div class="sgroup">ESP32 ROBOT</div>
+    <input type="text" class="sinput" id="espIP" placeholder="ESP32 IP e.g. 192.168.1.100">
+    <button class="sbtn" onclick="connectESP()">CONNECT BRO BOT</button>
+    <div id="espMsg" style="text-align:center;font-size:12px;color:var(--g);min-height:18px;"></div>
+
+    <div class="sgroup">BRO BOT</div>
+    <div class="srow"><div><div class="srow-label">Auto Obstacle Avoid</div><div class="srow-desc">Stop when IR/ultrasonic blocked</div></div><div class="toggle on" id="tObstacle" onclick="togSet(this,'obstacle')"></div></div>
+    <div class="srow"><div><div class="srow-label">Look At Speaker</div><div class="srow-desc">Head turns when speaking</div></div><div class="toggle on" id="tLook" onclick="togSet(this,'lookSpeak')"></div></div>
+
+    <div class="sgroup">BRO AI</div>
+    <div class="srow"><div><div class="srow-label">Personality</div></div><select class="sselect" id="sPers" onchange="saveSett()"><option value="friendly">Friendly</option><option value="funny">Funny Bro</option><option value="professional">Professional</option><option value="serious">Serious</option></select></div>
+    <div class="srow"><div><div class="srow-label">Voice Speed</div></div><input type="range" min="0.5" max="2" step="0.1" value="0.9" id="sSpeed" style="width:100px;" oninput="saveSett()"></div>
+    <button class="sbtn gray" onclick="checkVoice()">🔊 CHECK VOICE</button>
+    <div id="voiceInfoBox"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+// ════════════════════════════════════════
+// MODELS
+// ════════════════════════════════════════
+const MODELS=[
+  {name:'Gemini 2.5 Flash',    p:'gemini',m:'gemini-2.5-flash-preview-04-17',   k:'g', tier:10},
+  {name:'Gemini 2.5 Pro',      p:'gemini',m:'gemini-2.5-pro-preview-05-06',     k:'g', tier:10},
+  {name:'Gemini 2.5 Flash Lite',p:'gemini',m:'gemini-2.5-flash-lite-preview-06-17',k:'g',tier:9},
+  {name:'Gemini 2.0 Flash',    p:'gemini',m:'gemini-2.0-flash',                 k:'g', tier:9},
+  {name:'Gemini 2.0 Flash Exp',p:'gemini',m:'gemini-2.0-flash-exp',             k:'g', tier:8},
+  {name:'Gemini 2.0 Flash Lite',p:'gemini',m:'gemini-2.0-flash-lite',           k:'g', tier:8},
+  {name:'Gemini 2.0 Pro Exp',  p:'gemini',m:'gemini-2.0-pro-exp',               k:'g', tier:8},
+  {name:'Gemini 1.5 Pro',      p:'gemini',m:'gemini-1.5-pro',                   k:'g', tier:7},
+  {name:'Gemini 1.5 Flash',    p:'gemini',m:'gemini-1.5-flash',                 k:'g', tier:7},
+  {name:'Gemini 1.5 Flash-8B', p:'gemini',m:'gemini-1.5-flash-8b',             k:'g', tier:6},
+  {name:'Gemma 3 27B',         p:'gemini',m:'gemma-3-27b-it',                   k:'g', tier:5},
+  {name:'Gemma 3 12B',         p:'gemini',m:'gemma-3-12b-it',                   k:'g', tier:4},
+  {name:'Gemma 3 4B',          p:'gemini',m:'gemma-3-4b-it',                    k:'g', tier:3},
+  {name:'Gemma 3 1B',          p:'gemini',m:'gemma-3-1b-it',                    k:'g', tier:2},
+  {name:'GPT-4o Mini',         p:'github',m:'gpt-4o-mini',                      k:'gh',tier:8},
+  {name:'GPT-4o',              p:'github',m:'gpt-4o',                           k:'gh',tier:9},
+  {name:'Llama 3.3 70B',       p:'github',m:'meta-llama-3.3-70b-instruct',      k:'gh',tier:7},
+  {name:'Mistral Large',       p:'github',m:'mistral-large-2411',               k:'gh',tier:6},
+];
+
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let keys  = JSON.parse(localStorage.getItem('bk')||'{}');
+let sett  = JSON.parse(localStorage.getItem('bs')||'{"obstacle":true,"lookSpeak":true,"personality":"friendly","voiceSpeed":0.9}');
+let mems  = JSON.parse(localStorage.getItem('bm')||'[]');
+let skip  = JSON.parse(localStorage.getItem('bsk')||'{}');
+let chats = JSON.parse(localStorage.getItem('bchats')||'[]');
+let curChatId=null, chatMsgCount=0;
+let eIP   = localStorage.getItem('bi')||'';
+let rOK=false, sp=50;
+let eyeTimer=null, blinkTimer=null, sensorTimer=null;
+
+// auto-reset skips every 24h
+(()=>{const t=+localStorage.getItem('bskt')||0;if(Date.now()-t>86400000){skip={};localStorage.setItem('bsk','{}');localStorage.setItem('bskt',''+Date.now());}})();
+
+// ════════════════════════════════════════
+// SCREEN NAVIGATION
+// ════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='brobotScreen') startEyes();
+  else stopEyes();
+  if(id==='settingsScreen'){loadSettingsUI();renderModelList();}
+  if(id==='chatScreen') renderSidebar();
+}
+
+// ════════════════════════════════════════
+// AI — SMART MODEL SELECTION
+// ════════════════════════════════════════
+function getBestModels(){
+  return [...MODELS]
+    .filter(m=>keys[m.k]&&!skip[m.name])
+    .sort((a,b)=>b.tier-a.tier);
+}
+
+async function callAI(userMsg, onReply){
+  const pers=sett.personality||'friendly';
+  const memCtx=mems.slice(0,5).map(m=>'['+m.category+']: '+m.text).join('; ');
+  const sys=`You are Bro AI, a ${pers} AI robot assistant. Robot commands use brackets: [MOVE_FORWARD] [MOVE_BACKWARD] [TURN_LEFT] [TURN_RIGHT] [STOP] [HEAD_LEFT] [HEAD_RIGHT] [HEAD_CENTER] [TILT_UP] [TILT_DOWN]. Keep responses concise. No emojis in spoken replies. Memories: ${memCtx}`;
+
+  const available=getBestModels();
+  if(!available.length){
+    onReply('No API keys set. Go to Settings and add your Gemini key.');
+    return;
+  }
+
+  for(const model of available){
+    document.getElementById('modelBadge').textContent=model.name;
+    try{
+      let url,body,headers={'Content-Type':'application/json'};
+      if(model.p==='gemini'){
+        url='https://generativelanguage.googleapis.com/v1beta/models/'+model.m+':generateContent?key='+keys[model.k];
+        body=JSON.stringify({contents:[{parts:[{text:sys+'\nUser: '+userMsg}]}]});
+      } else {
+        url='https://models.inference.ai.azure.com/chat/completions';
+        headers['Authorization']='Bearer '+keys[model.k];
+        body=JSON.stringify({model:model.m,messages:[{role:'system',content:sys},{role:'user',content:userMsg}],max_tokens:500});
+      }
+      const r=await fetch(url,{method:'POST',headers,body,signal:AbortSignal.timeout(12000)});
+      if(r.status===429||r.status===503||r.status===402){
+        skip[model.name]=true; localStorage.setItem('bsk',JSON.stringify(skip)); continue;
+      }
+      if(!r.ok) continue;
+      const d=await r.json();
+      const text=model.p==='gemini'
+        ?d.candidates?.[0]?.content?.parts?.[0]?.text
+        :d.choices?.[0]?.message?.content;
+      if(text&&text.trim().length>1){
+        onReply(text.trim()); return;
+      }
+    }catch(e){continue;}
+  }
+  onReply('All models are busy right now. Try again in a moment.');
+}
+
+// ════════════════════════════════════════
+// TTS — JARVIS VOICE
+// ════════════════════════════════════════
+function cleanText(t){
+  return t
+    .replace(/[\u{1F000}-\u{1FFFF}]/gu,'')
+    .replace(/[\u2600-\u27FF]/g,'')
+    .replace(/\[.*?\]/g,'')
+    .replace(/broai/gi,'Bro AI')
+    .replace(/brobot/gi,'Bro Bot')
+    .trim().substring(0,400);
+}
+
+function getBritishMaleVoice(){
+  const voices=window.speechSynthesis.getVoices();
+  const want=['Google UK English Male','Microsoft George','Microsoft Ryan','Daniel','Arthur','Malcolm'];
+  for(const n of want){
+    const v=voices.find(v=>v.name===n||v.name.startsWith(n));
+    if(v) return v;
+  }
+  const gb=voices.find(v=>v.lang==='en-GB');
+  if(gb) return gb;
+  const male=voices.find(v=>v.lang.startsWith('en')&&/david|mark|george|daniel|arthur|ryan|james/i.test(v.name));
+  return male||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}
+
+function speak(text, onDone){
+  if(!window.speechSynthesis){onDone&&onDone();return;}
+  window.speechSynthesis.cancel();
+  const clean=cleanText(text);
+  if(!clean){onDone&&onDone();return;}
+  const u=new SpeechSynthesisUtterance(clean);
+  u.rate=parseFloat(sett.voiceSpeed)||0.9;
+  u.pitch=0.85;
+  u.volume=1;
+  u.onend=()=>{onDone&&onDone();};
+  u.onerror=()=>{onDone&&onDone();};
+  const doSpeak=()=>{
+    const v=getBritishMaleVoice();
+    if(v) u.voice=v;
+    window.speechSynthesis.speak(u);
+  };
+  const voices=window.speechSynthesis.getVoices();
+  if(voices.length) doSpeak();
+  else{window.speechSynthesis.onvoiceschanged=()=>{doSpeak();window.speechSynthesis.onvoiceschanged=null;}; setTimeout(doSpeak,300);}
+}
+
+// ════════════════════════════════════════
+// EYES
+// ════════════════════════════════════════
+function startEyes(){
+  stopEyes();
+  blinkTimer=setInterval(()=>{
+    ['eyeL','eyeR','fsEyeL','fsEyeR'].forEach(id=>{
+      const e=document.getElementById(id);
+      if(e){e.classList.add('blink');setTimeout(()=>e.classList.remove('blink'),150);}
+    });
+  },3000+Math.random()*2000);
+  eyeTimer=setInterval(()=>{
+    const x=(Math.random()-0.5)*16, y=(Math.random()-0.5)*12;
+    ['pupL','pupR','fsPupL','fsPupR'].forEach(id=>{
+      const p=document.getElementById(id);
+      if(p){p.style.transform=`translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;setTimeout(()=>p.style.transform='translate(-50%,-50%)',700);}
+    });
+  },2500+Math.random()*1200);
+}
+function stopEyes(){clearInterval(blinkTimer);clearInterval(eyeTimer);}
+
+function setEmotion(text){
+  const t=text.toLowerCase();
+  let col='#00FFFF',sh='rgba(0,255,255,0.8)',emo='NEUTRAL';
+  if(/happy|great|awesome|love|wonderful|excellent/.test(t)){col='#00FF88';sh='rgba(0,255,136,0.8)';emo='HAPPY';}
+  else if(/sorry|fail|error|wrong|can't/.test(t)){col='#FF8800';sh='rgba(255,136,0,0.8)';emo='CONCERNED';}
+  else if(/think|hmm|let me|calculating|processing/.test(t)){col='#8800FF';sh='rgba(136,0,255,0.8)';emo='THINKING';}
+  else if(/alert|danger|warning|stop|obstacle/.test(t)){col='#FF4444';sh='rgba(255,68,68,0.8)';emo='ALERT';}
+  else if(/curious|interesting|really|wow/.test(t)){col='#FFD700';sh='rgba(255,215,0,0.8)';emo='CURIOUS';}
+  ['eyeL','eyeR','fsEyeL','fsEyeR'].forEach(id=>{
+    const e=document.getElementById(id);
+    if(e){e.style.background=col;e.style.boxShadow='0 0 40px '+sh;}
+  });
+  ['emoLabel','fsEmo'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=emo;});
+}
+
+function setSubtitle(text){
+  const clean=cleanText(text).substring(0,140);
+  ['subtitleText','fsSub'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=clean;});
+}
+
+function setListenLabel(text){
+  ['listenLabel','fsListen'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=text;});
+}
+
+// ════════════════════════════════════════
+// BROBOT VOICE — THE MAIN FIX
+// Continuous listening loop:
+// 1. Listen for "hey bro"
+// 2. Say "yes?" 
+// 3. Listen for command
+// 4. Call AI
+// 5. Speak reply + show subtitle
+// 6. Go back to step 1
+// ════════════════════════════════════════
+let botVoiceOn=false;
+let currentRec=null;
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+function toggleBotVoice(){
+  if(botVoiceOn) stopBotVoice();
+  else startBotVoice();
+}
+
+function startBotVoice(){
+  if(!SR){alert('Voice not supported. Use Chrome!');return;}
+  botVoiceOn=true;
+  document.getElementById('voiceToggleBtn').textContent='🔴 VOICE ON';
+  document.getElementById('voiceToggleBtn').style.background='rgba(255,68,68,0.2)';
+  document.getElementById('voiceToggleBtn').style.color='var(--r)';
+  document.getElementById('voiceToggleBtn').style.border='1px solid var(--r)';
+  document.getElementById('listenStatus').textContent='LISTENING';
+  document.getElementById('listenStatus').style.color='var(--gr)';
+  setListenLabel('● LISTENING...');
+  listenForCommand();
+}
+
+function stopBotVoice(){
+  botVoiceOn=false;
+  currentRec?.abort();
+  currentRec=null;
+  document.getElementById('voiceToggleBtn').textContent='🎤 ENABLE VOICE';
+  document.getElementById('voiceToggleBtn').style.background='var(--c)';
+  document.getElementById('voiceToggleBtn').style.color='#000';
+  document.getElementById('voiceToggleBtn').style.border='none';
+  document.getElementById('listenStatus').textContent='MIC OFF';
+  document.getElementById('listenStatus').style.color='var(--g)';
+  setListenLabel('');
+}
+
+function listenForWakeWord(){
+  // Wake word removed — goes straight to listening
+  listenForCommand();
+}
+
+function listenForCommand(){
+  if(!botVoiceOn) return;
+
+  let gotResult=false; // local variable, no property on recognizer
+
+  const cmdRec=new SR();
+  cmdRec.lang='en-US';
+  cmdRec.continuous=false;
+  cmdRec.interimResults=false;
+  cmdRec.maxAlternatives=1;
+
+  cmdRec.onresult=(e)=>{
+    gotResult=true;
+    const cmd=e.results[0][0].transcript.trim();
+    if(!cmd||cmd.length<2){restartWake();return;}
+
+    // voice off command
+    if(/disable voice|turn off voice|stop listening|voice off/i.test(cmd)){
+      setSubtitle('Voice disabled.');
+      speak('Voice disabled. Tap the button to re-enable.',()=>stopBotVoice());
+      return;
+    }
+
+    setListenLabel('● THINKING...');
+    setSubtitle('Thinking...');
+    setEmotion('thinking');
+
+    callAI(cmd,(reply)=>{
+      setSubtitle(reply);
+      setEmotion(reply);
+      handleRobotCmds(reply);
+      saveMem(reply.substring(0,200),'general','auto');
+      setListenLabel('● SPEAKING...');
+      speak(reply,()=>{
+        setListenLabel('● LISTENING...');
+        restartWake();
+      });
+    });
+  };
+
+  cmdRec.onerror=()=>{
+    setListenLabel('● LISTENING...');
+    restartWake();
+  };
+
+  cmdRec.onend=()=>{
+    if(!gotResult){
+      setListenLabel('● LISTENING...');
+      restartWake();
+    }
+  };
+
+  try{cmdRec.start();}
+  catch(ex){console.log(ex);restartWake();}
+}
+
+function restartWake(){
+  if(botVoiceOn){
+    setListenLabel('● LISTENING...');
+    setTimeout(()=>listenForCommand(),600);
+  }
+}
+
+// ════════════════════════════════════════
+// CHAT MIC (Bro AI chat screen)
+// ════════════════════════════════════════
+let chatRecOn=false;
+function chatMic(){
+  if(!SR){alert('Use Chrome for voice!');return;}
+  if(chatRecOn) return;
+  const r=new SR();
+  r.lang='en-US'; r.continuous=false; r.interimResults=false;
+  chatRecOn=true;
+  document.getElementById('chatMicBtn').textContent='⏹';
+  r.onresult=(e)=>{
+    const t=e.results[0][0].transcript;
+    document.getElementById('chatInput').value=t;
+    sendChat();
+  };
+  r.onend=()=>{chatRecOn=false;document.getElementById('chatMicBtn').textContent='🎤';};
+  r.onerror=()=>{chatRecOn=false;document.getElementById('chatMicBtn').textContent='🎤';};
+  try{r.start();}catch(ex){chatRecOn=false;document.getElementById('chatMicBtn').textContent='🎤';}
+}
+
+// ════════════════════════════════════════
+// CHAT SCREEN
+// ════════════════════════════════════════
+function sendChat(){
+  const inp=document.getElementById('chatInput');
+  const txt=inp.value.trim(); if(!txt)return;
+  inp.value='';
+
+  // memory shortcuts
+  if(/save this|remember this/i.test(txt)){
+    const c=txt.replace(/save this|remember this/gi,'').trim();
+    if(c){saveMem(c,'preference','manual');addChatMsg('Memory saved: '+c.substring(0,60),'bot');speak('Memory saved!');return;}
+  }
+
+  addChatMsg(txt,'user');
+  saveChatMsg('user',txt);
+  showTyping(true);
+
+  callAI(txt,(reply)=>{
+    showTyping(false);
+    addChatMsg(reply,'bot');
+    saveChatMsg('bot',reply);
+    setSubtitle(reply);
+    setEmotion(reply);
+    speak(reply);
+    handleRobotCmds(reply);
+    saveMem(reply.substring(0,200),'general','auto');
+    chatMsgCount++;
+    if(chatMsgCount===2) autoNameChat();
+  });
+}
+
+function addChatMsg(text,type){
+  const l=document.getElementById('msgList');
+  const d=document.createElement('div');
+  d.className='msg '+(type==='user'?'user':type==='bot'?'bot':'sys');
+  d.textContent=text; l.appendChild(d);
+  setTimeout(()=>l.scrollTop=l.scrollHeight,50);
+}
+
+function showTyping(s){
+  document.getElementById('typingDiv').style.display=s?'block':'none';
+  if(s){const l=document.getElementById('msgList');l.scrollTop=l.scrollHeight;}
+}
+
+// ════════════════════════════════════════
+// CHAT HISTORY
+// ════════════════════════════════════════
+function newChat(){
+  saveCurChat(); curChatId=null; chatMsgCount=0;
+  document.getElementById('msgList').innerHTML='<div class="msg sys">New chat started!</div>';
+  document.getElementById('sidebar').classList.remove('open');
+  renderSidebar();
+}
+
+function saveCurChat(){
+  if(!curChatId)return;
+  localStorage.setItem('bchats',JSON.stringify(chats));
+}
+
+function saveChatMsg(role,text){
+  if(!curChatId){
+    curChatId=Date.now(); chatMsgCount=0;
+    chats.unshift({id:curChatId,name:'New Chat',msgs:[],time:new Date().toLocaleDateString()});
+  }
+  const c=chats.find(c=>c.id===curChatId);
+  if(c){c.msgs.push({role,text});localStorage.setItem('bchats',JSON.stringify(chats));}
+}
+
+function autoNameChat(){
+  const c=chats.find(c=>c.id===curChatId); if(!c||c.name!=='New Chat')return;
+  const first=c.msgs.find(m=>m.role==='user'); if(!first)return;
+  c.name=first.text.substring(0,35)+(first.text.length>35?'...':'');
+  localStorage.setItem('bchats',JSON.stringify(chats)); renderSidebar();
+}
+
+function loadChat(id){
+  saveCurChat(); curChatId=id; chatMsgCount=0;
+  const c=chats.find(c=>c.id===id); if(!c)return;
+  const l=document.getElementById('msgList'); l.innerHTML='';
+  c.msgs.forEach(m=>{addChatMsg(m.text,m.role);chatMsgCount++;});
+  setTimeout(()=>l.scrollTop=l.scrollHeight,50);
+  document.getElementById('sidebar').classList.remove('open');
+  renderSidebar();
+}
+
+function deleteChat(id,ev){
+  ev.stopPropagation();
+  if(!confirm('Delete?'))return;
+  chats=chats.filter(c=>c.id!==id);
+  if(curChatId===id){curChatId=null;document.getElementById('msgList').innerHTML='<div class="msg sys">Chat deleted.</div>';}
+  localStorage.setItem('bchats',JSON.stringify(chats)); renderSidebar();
+}
+
+function renderSidebar(){
+  chats=JSON.parse(localStorage.getItem('bchats')||'[]');
+  const l=document.getElementById('sbList'); if(!l)return;
+  if(!chats.length){l.innerHTML='<div style="color:var(--g);font-size:12px;text-align:center;padding:20px;">No history yet!</div>';return;}
+  l.innerHTML='';
+  chats.forEach(c=>{
+    const d=document.createElement('div');
+    d.className='sb-item'+(c.id===curChatId?' active':'');
+    d.onclick=()=>loadChat(c.id);
+    d.innerHTML=`<button class="sb-del" onclick="deleteChat(${c.id},event)">✕</button><div class="sb-name">${esc(c.name)}</div><div class="sb-date">${c.time}</div>`;
+    l.appendChild(d);
+  });
+}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');renderSidebar();}
+function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ════════════════════════════════════════
+// FULLSCREEN FACE
+// ════════════════════════════════════════
+function openFS(){document.getElementById('fsOverlay').classList.add('show');}
+function closeFS(){document.getElementById('fsOverlay').classList.remove('show');}
+
+// ════════════════════════════════════════
+// ROBOT / ESP32
+// ════════════════════════════════════════
+function handleRobotCmds(text){
+  if(!rOK)return; const t=text.toUpperCase();
+  if(t.includes('[MOVE_FORWARD]'))espCmd({action:'forward',speed:sp});
+  else if(t.includes('[MOVE_BACKWARD]'))espCmd({action:'backward',speed:sp});
+  else if(t.includes('[TURN_LEFT]'))espCmd({action:'left',speed:sp});
+  else if(t.includes('[TURN_RIGHT]'))espCmd({action:'right',speed:sp});
+  else if(t.includes('[STOP]'))espCmd({action:'stop'});
+  if(t.includes('[HEAD_LEFT]'))espCmd({action:'servo_head',angle:45});
+  else if(t.includes('[HEAD_RIGHT]'))espCmd({action:'servo_head',angle:135});
+  else if(t.includes('[HEAD_CENTER]'))espCmd({action:'servo_head',angle:90});
+  if(t.includes('[TILT_UP]'))espCmd({action:'servo_tilt',angle:60});
+  else if(t.includes('[TILT_DOWN]'))espCmd({action:'servo_tilt',angle:120});
+}
+
+async function espCmd(obj){
+  if(!eIP)return;
+  try{await fetch('http://'+eIP+'/command',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj),signal:AbortSignal.timeout(1000)});}catch(e){}
+}
+
+async function connectESP(){
+  const ip=document.getElementById('espIP').value.trim();
+  if(!ip){alert('Enter ESP32 IP!');return;}
+  eIP=ip; localStorage.setItem('bi',ip);
+  const m=document.getElementById('espMsg');
+  m.textContent='Connecting...'; m.style.color='var(--o)';
+  try{
+    const r=await fetch('http://'+ip+'/ping',{signal:AbortSignal.timeout(3000)});
+    if(r.ok){
+      rOK=true; m.textContent='Connected to Bro Bot!'; m.style.color='var(--gr)';
+      document.getElementById('botDot').classList.remove('red');
+      startSensors();
+    } else throw new Error();
+  }catch(e){rOK=false;m.textContent='Cannot connect. Check IP and WiFi.';m.style.color='var(--r)';}
+}
+
+function startSensors(){
+  clearInterval(sensorTimer);
+  sensorTimer=setInterval(async()=>{
+    if(!rOK||!eIP)return;
+    try{
+      const r=await fetch('http://'+eIP+'/sensors',{signal:AbortSignal.timeout(800)});
+      const d=await r.json();
+      if(sett.obstacle&&(d.ir1||d.ir2||d.ultrasonic<15)) espCmd({action:'stop'});
+    }catch(e){}
+  },500);
+}
+
+// ════════════════════════════════════════
+// MEMORY
+// ════════════════════════════════════════
+function saveMem(text,cat,src){
+  if(!text||text.length<3)return;
+  mems.unshift({id:Date.now(),text,category:cat,source:src,time:new Date().toLocaleString()});
+  if(mems.length>500) mems=mems.slice(0,500);
+  localStorage.setItem('bm',JSON.stringify(mems));
+}
+
+// ════════════════════════════════════════
+// SETTINGS UI
+// ════════════════════════════════════════
+function loadSettingsUI(){
+  keys=JSON.parse(localStorage.getItem('bk')||'{}');
+  sett=JSON.parse(localStorage.getItem('bs')||'{}');
+  if(keys.g) document.getElementById('kG').value=keys.g;
+  if(keys.gh) document.getElementById('kGH').value=keys.gh;
+  if(eIP) document.getElementById('espIP').value=eIP;
+  [['tObstacle','obstacle'],['tLook','lookSpeak']].forEach(([id,k])=>{
+    const e=document.getElementById(id); if(e) e.className='toggle'+(sett[k]?' on':'');
+  });
+  const p=document.getElementById('sPers'); if(p) p.value=sett.personality||'friendly';
+  const sp=document.getElementById('sSpeed'); if(sp) sp.value=sett.voiceSpeed||0.9;
+}
+
+function saveKeys(){
+  keys={g:document.getElementById('kG').value.trim(),gh:document.getElementById('kGH').value.trim()};
+  localStorage.setItem('bk',JSON.stringify(keys));
+  const m=document.getElementById('keyMsg'); m.textContent='Keys saved!';
+  setTimeout(()=>m.textContent='',2000); renderModelList();
+}
+
+function saveSett(){
+  sett.personality=document.getElementById('sPers').value;
+  sett.voiceSpeed=parseFloat(document.getElementById('sSpeed').value);
+  localStorage.setItem('bs',JSON.stringify(sett));
+}
+
+function togSet(el,key){
+  el.classList.toggle('on'); sett[key]=el.classList.contains('on');
+  localStorage.setItem('bs',JSON.stringify(sett));
+}
+
+function renderModelList(){
+  const el=document.getElementById('modelList'); if(!el)return;
+  el.innerHTML='';
+  [...MODELS].sort((a,b)=>b.tier-a.tier).forEach((m,i)=>{
+    const hasKey=!!keys[m.k], isSkip=!!skip[m.name];
+    const badge=!hasKey?'<span class="mbadge nokey">NO KEY</span>':isSkip?'<span class="mbadge skip">QUOTA</span>':'<span class="mbadge ok">READY</span>';
+    el.innerHTML+=`<div class="mrow"><span style="color:#ddd;font-size:12px;">${i+1}. ${m.name}</span>${badge}</div>`;
+  });
+}
+
+function resetSkip(){
+  skip={}; localStorage.setItem('bsk','{}'); localStorage.setItem('bskt',''+Date.now());
+  renderModelList(); alert('Quota skips reset!');
+}
+
+function checkVoice(){
+  const el=document.getElementById('voiceInfoBox');
+  el.style.display='block';
+  const voices=window.speechSynthesis.getVoices();
+  const sel=getBritishMaleVoice();
+  const enVoices=voices.filter(v=>v.lang.startsWith('en'));
+  el.innerHTML='<b style="color:var(--c)">Selected:</b> '+(sel?sel.name+' ('+sel.lang+')':'None')+'<br><br><b style="color:var(--c)">All English voices:</b><br>'+enVoices.map((v,i)=>`${i+1}. ${v.name} [${v.lang}]`).join('<br>');
+  speak('Hello! I am Bro AI, your robot companion.');
+}
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+keys  = JSON.parse(localStorage.getItem('bk')||'{}');
+sett  = JSON.parse(localStorage.getItem('bs')||'{"obstacle":true,"lookSpeak":true,"personality":"friendly","voiceSpeed":0.9}');
+mems  = JSON.parse(localStorage.getItem('bm')||'[]');
+skip  = JSON.parse(localStorage.getItem('bsk')||'{}');
+chats = JSON.parse(localStorage.getItem('bchats')||'[]');
+if(eIP) document.getElementById('espIP')&&(document.getElementById('espIP').value=eIP);
+if(window.speechSynthesis) window.speechSynthesis.getVoices();
+</script>
+</body>
+</html>
