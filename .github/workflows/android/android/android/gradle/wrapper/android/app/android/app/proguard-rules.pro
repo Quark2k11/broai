@@ -1,0 +1,4 @@
+-keep class com.quark.broai.** { *; }
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+-dontwarn org.json.**
