@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#000010">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="28dp" android:gravity="center">
+        <TextView android:text="Welcome to Bro AI" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="26sp" android:textColor="#00FFFF" android:textStyle="bold" android:gravity="center" android:layout_marginBottom="6dp"/>
+        <TextView android:text="Your personal Jarvis" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="13sp" android:textColor="#445566" android:gravity="center" android:layout_marginBottom="28dp"/>
+        <EditText android:id="@+id/etName" android:layout_width="match_parent" android:layout_height="52dp"
+            android:hint="Your name" android:textColor="#FFF" android:textColorHint="#445566" android:layout_marginBottom="14dp" android:inputType="textPersonName"/>
+        <EditText android:id="@+id/etGemini" android:layout_width="match_parent" android:layout_height="52dp"
+            android:hint="Gemini API Key (AIza...) — free" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="14dp"/>
+        <EditText android:id="@+id/etGroq" android:layout_width="match_parent" android:layout_height="52dp"
+            android:hint="Groq Key (gsk_...) — optional" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="28dp"/>
+        <Button android:id="@+id/btnStart" android:text="LETS GO" android:layout_width="match_parent" android:layout_height="56dp"
+            android:backgroundTint="#00FFFF" android:textColor="#000" android:textStyle="bold" android:textSize="15sp"/>
+    </LinearLayout>
+</ScrollView>
