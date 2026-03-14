@@ -13,13 +13,11 @@ jobs:
           java-version: "17"
           distribution: temurin
       - name: Install Gradle
-        run: |
-          cd android
-          gradle wrapper --gradle-version 8.0
+        run: cd android && gradle wrapper --gradle-version 8.0
       - name: Make gradlew executable
         run: chmod +x android/gradlew
       - name: Build Debug APK
-        run: cd android && ./gradlew assembleDebug --stacktrace
+        run: cd android && ./gradlew assembleDebug --stacktrace --warning-mode all -Dorg.gradle.warning.mode=none
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
