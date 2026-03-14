@@ -3,15 +3,17 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="#000010" android:orientation="vertical"
     android:padding="24dp" android:gravity="center">
-    <TextView android:text="BRO AI" android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <TextView android:text="BRO AI"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:textSize="40sp" android:textColor="#00FFFF" android:textStyle="bold"
         android:letterSpacing="0.25" android:layout_marginBottom="6dp"/>
-    <TextView android:text="Your Jarvis" android:layout_width="wrap_content" android:layout_height="wrap_content"
+    <TextView android:text="Your Jarvis"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:textSize="13sp" android:textColor="#445566" android:layout_marginBottom="30dp"/>
     <TextView android:id="@+id/tvStatus" android:text="Say Hey Bro anytime"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:textSize="15sp" android:textColor="#667788" android:gravity="center"
-        android:layout_marginBottom="40dp"/>
+        android:textSize="15sp" android:textColor="#667788"
+        android:gravity="center" android:layout_marginBottom="40dp"/>
     <Button android:id="@+id/btnTalk" android:text="TALK NOW"
         android:layout_width="220dp" android:layout_height="56dp"
         android:backgroundTint="#00FFFF" android:textColor="#000"
