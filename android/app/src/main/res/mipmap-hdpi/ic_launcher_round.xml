@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
     <circle android:fillColor="#000820" android:cx="54" android:cy="54" android:r="54"/>
     <circle android:fillColor="#00FFFF" android:cx="54" android:cy="48" android:r="28"/>
     <circle android:fillColor="#000820" android:cx="45" android:cy="44" android:r="6"/>
