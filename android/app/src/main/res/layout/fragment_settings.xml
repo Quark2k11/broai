@@ -1,33 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#000010">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#000010">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="22dp">
-        <TextView android:text="Settings" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textSize="22sp" android:textColor="#00FFFF" android:textStyle="bold" android:layout_marginBottom="16dp"/>
-        <EditText android:id="@+id/etName" android:layout_width="match_parent" android:layout_height="52dp"
-            android:hint="Your name" android:textColor="#FFF" android:textColorHint="#445566" android:layout_marginBottom="12dp"/>
-        <TextView android:text="API Keys  (Priority: Gemini → Groq → Mistral → OpenRouter → HuggingFace → WisdomGate → GitHub)"
+        <TextView android:text="Settings"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="22sp" android:textColor="#00FFFF" android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+        <EditText android:id="@+id/etName"
+            android:layout_width="match_parent" android:layout_height="52dp"
+            android:hint="Your name" android:textColor="#FFF" android:textColorHint="#445566"
+            android:layout_marginBottom="12dp"/>
+        <TextView android:text="API Keys (Priority: Gemini → Groq → Mistral → OpenRouter → HuggingFace → WisdomGate → GitHub)"
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:textColor="#00FFAA" android:textSize="10sp" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/etGemini" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Gemini Key (AIza...)" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="6dp"/>
-        <Button android:id="@+id/btnGetGemini" android:layout_width="match_parent" android:layout_height="34dp" android:text="Get free Gemini key" android:backgroundTint="transparent" android:textColor="#00FFCC" android:layout_marginBottom="6dp"/>
-        <EditText android:id="@+id/etGroq" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Groq Key (gsk_...)" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="6dp"/>
-        <Button android:id="@+id/btnGetGroq" android:layout_width="match_parent" android:layout_height="34dp" android:text="Get free Groq key" android:backgroundTint="transparent" android:textColor="#00FFCC" android:layout_marginBottom="6dp"/>
-        <EditText android:id="@+id/etMistral" android:layout_width="match_parent" android:layout_height="48dp" android:hint="Mistral Key" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="6dp"/>
-        <EditText android:id="@+id/etOR" android:layout_width="match_parent" android:layout_height="48dp" android:hint="OpenRouter Key (sk-or-...)" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="6dp"/>
-        <EditText android:id="@+id/etHF" android:layout_width="match_parent" android:layout_height="48dp" android:hint="HuggingFace Token (hf_...)" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="6dp"/>
-        <EditText android:id="@+id/etWG" android:layout_width="match_parent" android:layout_height="48dp" android:hint="WisdomGate Key" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="6dp"/>
-        <EditText android:id="@+id/etGH" android:layout_width="match_parent" android:layout_height="48dp" android:hint="GitHub AI Token (ghp_...)" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textPassword" android:layout_marginBottom="14dp"/>
-        <EditText android:id="@+id/etESP" android:layout_width="match_parent" android:layout_height="48dp" android:hint="ESP32 IP (e.g. 192.168.1.100)" android:textColor="#FFF" android:textColorHint="#445566" android:inputType="textUri" android:layout_marginBottom="16dp"/>
-        <TextView android:text="Active Goals" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#00FFFF" android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="6dp"/>
-        <TextView android:id="@+id/tvGoals" android:layout_width="match_parent" android:layout_height="wrap_content"
+        <EditText android:id="@+id/etGemini"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="Gemini Key (AIza...)" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="4dp"/>
+        <Button android:id="@+id/btnGetGemini"
+            android:layout_width="match_parent" android:layout_height="34dp"
+            android:text="Get free Gemini key" android:backgroundTint="transparent"
+            android:textColor="#00FFCC" android:layout_marginBottom="6dp"/>
+        <EditText android:id="@+id/etGroq"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="Groq Key (gsk_...)" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="4dp"/>
+        <Button android:id="@+id/btnGetGroq"
+            android:layout_width="match_parent" android:layout_height="34dp"
+            android:text="Get free Groq key" android:backgroundTint="transparent"
+            android:textColor="#00FFCC" android:layout_marginBottom="6dp"/>
+        <EditText android:id="@+id/etMistral"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="Mistral Key" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="6dp"/>
+        <EditText android:id="@+id/etOR"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="OpenRouter Key (sk-or-...)" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="6dp"/>
+        <EditText android:id="@+id/etHF"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="HuggingFace Token (hf_...)" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="6dp"/>
+        <EditText android:id="@+id/etWG"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="WisdomGate Key" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="6dp"/>
+        <EditText android:id="@+id/etGH"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="GitHub AI Token (ghp_...)" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textPassword" android:layout_marginBottom="14dp"/>
+        <EditText android:id="@+id/etESP"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:hint="ESP32 IP (e.g. 192.168.1.100)" android:textColor="#FFF" android:textColorHint="#445566"
+            android:inputType="textUri" android:layout_marginBottom="16dp"/>
+        <TextView android:text="Active Goals"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textColor="#00FFFF" android:textSize="12sp" android:textStyle="bold"
+            android:layout_marginBottom="6dp"/>
+        <TextView android:id="@+id/tvGoals"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
             android:textColor="#AAAAAA" android:textSize="13sp" android:lineSpacingExtra="4dp"
             android:background="#0A0A1A" android:padding="12dp" android:layout_marginBottom="16dp"/>
-        <Button android:id="@+id/btnAccessibility" android:layout_width="match_parent" android:layout_height="46dp" android:backgroundTint="#0A1020" android:textColor="#00FFFF" android:text="Enable Accessibility Service" android:layout_marginBottom="6dp"/>
-        <Button android:id="@+id/btnNotifAccess" android:layout_width="match_parent" android:layout_height="46dp" android:backgroundTint="#0A1020" android:textColor="#00FFFF" android:text="Enable Notification Access" android:layout_marginBottom="6dp"/>
-        <Button android:id="@+id/btnOverlay" android:layout_width="match_parent" android:layout_height="46dp" android:backgroundTint="#0A1020" android:textColor="#00FFFF" android:text="Enable Overlay Permission" android:layout_marginBottom="16dp"/>
-        <Button android:id="@+id/btnSave" android:layout_width="match_parent" android:layout_height="56dp"
-            android:text="SAVE SETTINGS" android:backgroundTint="#00FFFF" android:textColor="#000" android:textStyle="bold" android:textSize="15sp"/>
+        <Button android:id="@+id/btnAccessibility"
+            android:layout_width="match_parent" android:layout_height="46dp"
+            android:backgroundTint="#0A1020" android:textColor="#00FFFF"
+            android:text="Enable Accessibility Service" android:layout_marginBottom="6dp"/>
+        <Button android:id="@+id/btnNotifAccess"
+            android:layout_width="match_parent" android:layout_height="46dp"
+            android:backgroundTint="#0A1020" android:textColor="#00FFFF"
+            android:text="Enable Notification Access" android:layout_marginBottom="6dp"/>
+        <Button android:id="@+id/btnOverlay"
+            android:layout_width="match_parent" android:layout_height="46dp"
+            android:backgroundTint="#0A1020" android:textColor="#00FFFF"
+            android:text="Enable Overlay Permission" android:layout_marginBottom="16dp"/>
+        <Button android:id="@+id/btnSave"
+            android:layout_width="match_parent" android:layout_height="56dp"
+            android:text="SAVE SETTINGS" android:backgroundTint="#00FFFF"
+            android:textColor="#000" android:textStyle="bold" android:textSize="15sp"/>
     </LinearLayout>
 </ScrollView>
