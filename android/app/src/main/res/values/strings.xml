@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Bro AI</string>
-    <string name="accessibility_description">Bro AI controls your Android on voice command — scroll, type, back, home, answer calls and more.</string>
+    <string name="accessibility_description">Bro AI controls your Android on voice command — scroll, type, read screen, back, home and more.</string>
 </resources>
