@@ -1,20 +1,20 @@
 package com.quark.broai
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.quark.broai.databinding.ActivityMainBinding
 import com.quark.broai.services.BroService
-import com.quark.broai.ui.MainFragment
-import com.quark.broai.ui.SetupFragment
+import com.quark.broai.services.BroOverlayService
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,60 +35,81 @@ class MainActivity : AppCompatActivity() {
             add(Manifest.permission.ANSWER_PHONE_CALLS)
     }.toTypedArray()
 
-    override fun onCreate(s: Bundle?) {
-        super.onCreate(s)
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
-        val prefs = getSharedPreferences(BroAIApp.PREFS, MODE_PRIVATE)
-        if (!prefs.getBoolean(BroAIApp.K_SETUP, false)) showSetup() else checkPerms()
-    }
 
-    private fun showSetup() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, SetupFragment()).commit()
-    }
+        b.webView.apply {
+            settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                allowFileAccess = true
+                allowContentAccess = true
+                mediaPlaybackRequiresUserGesture = false
+                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                cacheMode = WebSettings.LOAD_DEFAULT
+                userAgentString = "BroAI/10.0 Android"
+                setSupportZoom(false)
+                builtInZoomControls = false
+                loadWithOverviewMode = true
+                useWideViewPort = true
+                databaseEnabled = true
+                setGeolocationEnabled(true)
+            }
+            webChromeClient = object : WebChromeClient() {
+                override fun onPermissionRequest(request: PermissionRequest) {
+                    request.grant(request.resources)
+                }
+                override fun onGeolocationPermissionsShowPrompt(
+                    origin: String, callback: GeolocationPermissions.Callback
+                ) { callback.invoke(origin, true, false) }
+            }
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView, request: WebResourceRequest
+                ): Boolean {
+                    val url = request.url.toString()
+                    if (!url.startsWith("file://") && !url.startsWith("https://") && !url.startsWith("http://")) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        return true
+                    }
+                    return false
+                }
+            }
+            addJavascriptInterface(AndroidBridge(this@MainActivity), "AndroidBridge")
+            loadUrl("file:///android_asset/broai_v10.html")
+        }
 
-    fun onSetupComplete() { checkPerms() }
+        checkPerms()
+    }
 
     private fun checkPerms() {
         val missing = PERMS.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
         if (missing.isNotEmpty()) ActivityCompat.requestPermissions(this, missing.toTypedArray(), PC)
-        else checkOverlay()
+        else startServices()
     }
 
-    private fun checkOverlay() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-            AlertDialog.Builder(this)
-                .setTitle("Overlay Permission")
-                .setMessage("Bro AI needs overlay permission for full power.")
-                .setPositiveButton("Allow") { _, _ ->
-                    startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:$packageName")))
-                }
-                .setNegativeButton("Skip") { _, _ -> launch() }
-                .show()
-        } else launch()
-    }
-
-    private fun launch() {
+    fun startServices() {
+        val prefs = getSharedPreferences(BroAIApp.PREFS, MODE_PRIVATE)
+        if (!prefs.getBoolean(BroAIApp.K_MASTER, true)) return
         val i = Intent(this, BroService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i)
         else startService(i)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, MainFragment()).commit()
     }
 
     override fun onRequestPermissionsResult(rc: Int, p: Array<out String>, r: IntArray) {
         super.onRequestPermissionsResult(rc, p, r)
-        if (rc == PC) checkOverlay()
+        if (rc == PC) startServices()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(this) &&
-            supportFragmentManager.findFragmentById(R.id.fragmentContainer) !is MainFragment)
-            launch()
+    override fun onBackPressed() {
+        if (b.webView.canGoBack()) b.webView.goBack() else super.onBackPressed()
     }
+
+    override fun onResume()  { super.onResume();  b.webView.onResume() }
+    override fun onPause()   { super.onPause();   b.webView.onPause() }
 }
