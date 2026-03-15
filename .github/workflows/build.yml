@@ -20,9 +20,11 @@ jobs:
         run: chmod +x android/gradlew
       - name: Build Debug APK
         run: cd android && gradle assembleDebug
+      - name: Find APK
+        run: find /home/runner/work -name "*.apk" 2>/dev/null
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BroAI-v10-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/*.apk
           retention-days: 30
