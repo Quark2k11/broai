@@ -4,8 +4,8 @@
         <item name="colorPrimary">#00FFFF</item>
         <item name="colorPrimaryDark">#000010</item>
         <item name="colorAccent">#00FFFF</item>
-        <item name="android:windowBackground">#000010</item>
-        <item name="android:statusBarColor">#000010</item>
-        <item name="android:navigationBarColor">#000010</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
     </style>
 </resources>
