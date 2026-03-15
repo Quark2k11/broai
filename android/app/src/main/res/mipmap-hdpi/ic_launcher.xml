@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp"
-    android:viewportWidth="108" android:viewportHeight="108">
-    <path android:fillColor="#000820" android:pathData="M0,0h108v108H0z"/>
-    <circle android:fillColor="#00FFFF" android:cx="54" android:cy="48" android:r="28"/>
-    <circle android:fillColor="#000820" android:cx="45" android:cy="44" android:r="6"/>
-    <circle android:fillColor="#000820" android:cx="63" android:cy="44" android:r="6"/>
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#000820"
+        android:pathData="M0,0h108v108H0z"/>
+    <path android:fillColor="#00FFFF"
+        android:pathData="M54,20C35.2,20 20,35.2 20,54C20,72.8 35.2,88 54,88C72.8,88 88,72.8 88,54C88,35.2 72.8,20 54,20Z"/>
+    <path android:fillColor="#000820"
+        android:pathData="M39,44C39,40.7 41.7,38 45,38C48.3,38 51,40.7 51,44C51,47.3 48.3,50 45,50C41.7,50 39,47.3 39,44Z"/>
+    <path android:fillColor="#000820"
+        android:pathData="M57,44C57,40.7 59.7,38 63,38C66.3,38 69,40.7 69,44C69,47.3 66.3,50 63,50C59.7,50 57,47.3 57,44Z"/>
 </vector>
