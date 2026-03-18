@@ -295,7 +295,7 @@ class AndroidBridge(private val ctx: Context) {
                 .build()
             val req = okhttp3.Request.Builder()
                 .url("http://$ip/$endpoint")
-                .post(body.toRequestBody(okhttp3.MediaType.parse("application/json")))
+                .post(okhttp3.RequestBody.create(body.toByteArray(), okhttp3.MediaType.get("application/json")))
                 .build()
             val res = client.newCall(req).execute()
             res.body?.string() ?: "ok"
@@ -376,6 +376,4 @@ class AndroidBridge(private val ctx: Context) {
 
 // Extension for OkHttp
 fun String.toRequestBody(mediaType: String): okhttp3.RequestBody =
-    okhttp3.RequestBody.create(okhttp3.MediaType.parse(mediaType), this)
-
-fun String.toMediaType(): okhttp3.MediaType? = okhttp3.MediaType.parse(this)
+    okhttp3.RequestBody.create(this.toByteArray(), okhttp3.MediaType.get(mediaType))
