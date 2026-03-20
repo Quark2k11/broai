@@ -14,7 +14,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.quark.broai.databinding.ActivityMainBinding
 import com.quark.broai.services.BroService
-import com.quark.broai.services.BroOverlayService
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,15 +57,40 @@ class MainActivity : AppCompatActivity() {
                 databaseEnabled = true
                 setGeolocationEnabled(true)
             }
+
             webChromeClient = object : WebChromeClient() {
                 override fun onPermissionRequest(request: PermissionRequest) {
-                    request.grant(request.resources)
+                    runOnUiThread { request.grant(request.resources) }
                 }
                 override fun onGeolocationPermissionsShowPrompt(
                     origin: String, callback: GeolocationPermissions.Callback
                 ) { callback.invoke(origin, true, false) }
             }
+
             webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    // Inject bridge connector after page loads
+                    // This connects HTML voice button to Android mic
+                    val js = """
+                        (function() {
+                            // Override toggleVoice to connect to Android service
+                            var origToggleVoice = window.toggleVoice;
+                            window.toggleVoice = function() {
+                                if (typeof AndroidBridge !== 'undefined') {
+                                    if (window.botVoiceOn) {
+                                        AndroidBridge.micDisable();
+                                    } else {
+                                        AndroidBridge.micEnable();
+                                    }
+                                }
+                                if (origToggleVoice) origToggleVoice();
+                            };
+                            console.log('[BroAI] Android bridge connected');
+                        })();
+                    """.trimIndent()
+                    view.evaluateJavascript(js, null)
+                }
                 override fun shouldOverrideUrlLoading(
                     view: WebView, request: WebResourceRequest
                 ): Boolean {
@@ -78,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                     return false
                 }
             }
+
             addJavascriptInterface(AndroidBridge(this@MainActivity), "AndroidBridge")
             loadUrl("file:///android_asset/broai_v10.html")
         }
@@ -90,10 +115,10 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
         if (missing.isNotEmpty()) ActivityCompat.requestPermissions(this, missing.toTypedArray(), PC)
-        else startServices()
+        else startBroService()
     }
 
-    fun startServices() {
+    fun startBroService() {
         val prefs = getSharedPreferences(BroAIApp.PREFS, MODE_PRIVATE)
         if (!prefs.getBoolean(BroAIApp.K_MASTER, true)) return
         val i = Intent(this, BroService::class.java)
@@ -103,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(rc: Int, p: Array<out String>, r: IntArray) {
         super.onRequestPermissionsResult(rc, p, r)
-        if (rc == PC) startServices()
+        if (rc == PC) startBroService()
     }
 
     override fun onBackPressed() {
