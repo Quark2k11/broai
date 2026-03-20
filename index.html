@@ -139,6 +139,30 @@ html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Ra
 
 /* ── SETTINGS ── */
 #settingsScreen{background:#000;}
+#devScreen{background:#000;}
+/* ── Dev / Code Runner ── */
+#devScreen .screen-inner{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+#codeEditorWrap{flex:1;display:flex;flex-direction:column;min-height:0;padding:8px;}
+#codeEditor{flex:1;background:#0a0a18;border:1px solid rgba(0,255,255,0.2);border-radius:10px;
+  color:#e0ffe0;font-family:'Courier New',monospace;font-size:13px;line-height:1.5;
+  padding:12px;outline:none;resize:none;min-height:0;tab-size:2;white-space:pre;}
+#codeOutput{background:#000;border:1px solid rgba(0,255,136,0.2);border-radius:10px;
+  color:#00ff88;font-family:'Courier New',monospace;font-size:12px;line-height:1.6;
+  padding:10px 12px;max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;flex-shrink:0;}
+#codeOutput.err{color:#ff4444;border-color:rgba(255,68,68,0.3);}
+.dev-toolbar{display:flex;gap:6px;padding:6px 8px;background:var(--d3);
+  border-top:1px solid rgba(0,255,255,0.1);flex-shrink:0;align-items:center;}
+.dev-btn{height:38px;padding:0 14px;border:none;border-radius:8px;
+  font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.dev-btn.run{background:var(--gr);color:#000;}
+.dev-btn.clr{background:rgba(255,68,68,0.15);color:var(--r);border:1px solid var(--r);}
+.dev-btn.ai{background:var(--c);color:#000;}
+.dev-lang{background:var(--d2);border:1px solid rgba(0,255,255,0.25);color:var(--c);
+  border-radius:8px;padding:0 10px;height:38px;font-family:'Orbitron',monospace;font-size:9px;outline:none;}
+#devStatus{font-family:'Orbitron',monospace;font-size:9px;color:var(--g);margin-left:4px;flex:1;text-align:right;}
+#devAskBar{display:flex;gap:6px;padding:6px 8px;border-top:1px solid rgba(0,255,255,0.08);flex-shrink:0;}
+#devAskInput{flex:1;background:#0a0a1a;border:1px solid rgba(0,255,255,0.2);border-radius:16px;
+  padding:7px 14px;color:#fff;font-size:14px;outline:none;font-family:'Rajdhani',sans-serif;}
 .set-scroll{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;}
 /* Section headers */
 .sec-head{font-family:'Orbitron',monospace;font-size:10px;color:var(--c);letter-spacing:3px;opacity:0.8;margin:12px 0 6px;padding-left:2px;border-left:2px solid var(--c);padding-left:8px;}
@@ -315,15 +339,36 @@ html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Ra
   flex-shrink:0;display:none;max-height:80px;overflow-y:auto;}
 
 /* ── ACCORDION / DROPDOWN SECTIONS ── */
-.acc-wrap{border:1px solid rgba(0,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:4px;}
+.acc-wrap{border:1px solid rgba(0,255,255,0.1);border-radius:12px;margin-bottom:4px;}
 .acc-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--d3);cursor:pointer;user-select:none;}
 .acc-head:active{background:rgba(0,255,255,0.08);}
 .acc-title{font-size:14px;font-weight:600;}
 .acc-sub{font-size:10px;color:var(--g);margin-top:2px;}
 .acc-arrow{font-size:14px;color:var(--c);transition:transform 0.25s;flex-shrink:0;}
 .acc-arrow.open{transform:rotate(180deg);}
-.acc-body{max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.2s;}
-.acc-body.open{max-height:2000px;padding:10px 12px 14px;}
+.acc-body{max-height:0;overflow:hidden;transition:max-height 0.5s ease,padding 0.2s;}
+.acc-body.open{max-height:9999px;padding:10px 12px 14px;overflow:visible;}
+
+/* Owner Profile */
+.op-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.op-lbl{font-size:11px;color:var(--g);letter-spacing:1px;}
+.op-inp{background:rgba(0,255,255,0.05);border:1px solid rgba(0,255,255,0.2);border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;font-family:'Rajdhani',sans-serif;width:100%;outline:none;}
+.op-inp:focus{border-color:var(--c);}
+/* Android Powers */
+.ap-wrap{background:rgba(0,255,255,0.03);border:1px solid rgba(0,255,255,0.15);border-radius:12px;padding:14px;margin-top:6px;}
+.ap-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.ap-row:last-child{border-bottom:none;}
+.ap-info{flex:1;}
+.ap-name{font-size:13px;color:#ddd;}
+.ap-desc{font-size:10px;color:#555;margin-top:2px;}
+.ap-tog{width:44px;height:24px;border-radius:12px;background:#111;border:1px solid #333;cursor:pointer;position:relative;transition:all 0.3s;flex-shrink:0;}
+.ap-tog.on{background:rgba(0,255,255,0.15);border-color:#00FFFF;}
+.ap-tog::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#444;top:2px;left:2px;transition:all 0.3s;}
+.ap-tog.on::after{background:#00FFFF;left:22px;}
+.ap-master{width:100%;height:46px;border-radius:10px;background:rgba(0,255,136,0.08);border:1px solid #00FF88;color:#00FF88;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-bottom:10px;transition:all 0.3s;}
+.ap-master.off{background:rgba(255,68,68,0.08);border-color:#FF4444;color:#FF4444;}
+.ap-perm{width:100%;height:36px;border-radius:8px;background:rgba(0,255,255,0.04);border:1px solid rgba(0,255,255,0.15);color:#00FFFF;font-size:11px;cursor:pointer;margin-top:5px;}
+
 </style>
 </head>
 <body>
@@ -336,8 +381,50 @@ html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Ra
   <div class="tagline">Your AI Robot Companion</div>
   <button class="main-btn p" onclick="goTo('faceScreen')">🤖 &nbsp;Bro Bot</button>
   <button class="main-btn s" onclick="goTo('chatScreen')">💬 &nbsp;Bro AI Chat</button>
+  <button class="main-btn s" onclick="goTo('devScreen')" style="border-color:var(--gr);color:var(--gr);margin-top:0;">⚡ &nbsp;Code Runner</button>
   <button class="settings-link" onclick="goTo('settingsScreen')">⚙ Settings</button>
   <div style="font-size:9px;color:#1a1a2e;margin-top:10px;letter-spacing:3px;">v10.0</div>
+</div>
+
+<!-- ══════════════════════════════════
+     DEV / CODE RUNNER SCREEN
+══════════════════════════════════ -->
+<div id="devScreen" class="screen">
+  <div class="tb">
+    <button class="back" onclick="goTo('homeScreen')">←</button>
+    <div class="tb-title">⚡ Code Runner</div>
+    <div id="devStatus">READY</div>
+  </div>
+  <div style="display:flex;flex-direction:column;flex:1;min-height:0;">
+    <!-- Toolbar -->
+    <div class="dev-toolbar">
+      <select class="dev-lang" id="devLang" onchange="devLangChange()">
+        <option value="js">JavaScript</option>
+        <option value="python">Python</option>
+      </select>
+      <button class="dev-btn run" onclick="devRun()">▶ RUN</button>
+      <button class="dev-btn ai" onclick="devAskAI()">🤖 AI WRITE</button>
+      <button class="dev-btn clr" onclick="devClear()">✕ CLEAR</button>
+    </div>
+    <!-- Editor -->
+    <div id="codeEditorWrap">
+      <textarea id="codeEditor" spellcheck="false" placeholder="// Write code here...
+// JavaScript runs instantly in browser
+// Python needs internet to load Pyodide (~10MB, one time)
+
+console.log('Hello from Bro AI!');"></textarea>
+    </div>
+    <!-- Output -->
+    <div style="padding:0 8px 4px;flex-shrink:0;">
+      <div style="font-family:'Orbitron',monospace;font-size:9px;color:var(--g);letter-spacing:2px;margin-bottom:4px;">OUTPUT</div>
+      <div id="codeOutput">Ready. Press ▶ RUN to execute.</div>
+    </div>
+    <!-- AI Ask bar -->
+    <div id="devAskBar">
+      <input id="devAskInput" placeholder="Ask AI to write code... e.g. sort an array, fibonacci, etc" onkeypress="if(event.key==='Enter')devAskAI()">
+      <button class="dev-btn ai" onclick="devAskAI()" style="height:38px;padding:0 12px;">ASK</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════
@@ -759,6 +846,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Ra
         <input type="text" class="sinp" id="fNickname" placeholder="Nickname (e.g. Bro, Buddy)">
         <input type="text" class="sinp" id="fCallName" placeholder="How to greet (e.g. Hey Rahul!)">
         <input type="text" class="sinp" id="fRelation" placeholder="Relation (e.g. Friend, Brother)">
+        <input type="tel" class="sinp" id="fPhone" placeholder="Phone number (for call/text commands)">
         <button class="sbtn cy" onclick="captureFace()">📸 Capture Face From Camera</button>
         <div style="font-size:11px;color:var(--g);margin-top:4px;line-height:1.6;">💡 Tip: Capture 3–5 times with different head angles for best accuracy. Open Vision tab or tap CAM first.</div>
         <div id="knownFaceList" style="margin-top:6px;"></div>
@@ -921,6 +1009,7 @@ personality_notes:[],corrections:[],
 environment:{},routines:{},mood_patterns:{}
 };
 let skip     = JSON.parse(localStorage.getItem('bsk')||'{}');
+let currentSpeaker = null;  // who is currently talking — set by face detection, NOT assumed
 let chats    = JSON.parse(localStorage.getItem('bchats')||'[]');
 let habits   = JSON.parse(localStorage.getItem('bhab')||'{}');
 let knownFaces   = JSON.parse(localStorage.getItem('bfaces')||'[]');
@@ -931,10 +1020,15 @@ let eIP      = localStorage.getItem('bi')||'';
 let rOK=false, robotSpeed=50;
 let intruderAlertRunning=false;
 let botVoiceOn=false;
+let activeBotSR=null, listenLoopT=null;
+let wakeWordMode=true;      // true=waiting for "hey bro", false=active command mode
+let wakeActiveUntil=0;      // timestamp when active mode expires
+let wakeExpireT=null;       // timer for expiry
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let eyeT=null, blinkT=null;
 let bgCamOn=false, bgStream=null;
 let bgDetectT=null, bgMotionT=null, bgEmergT=null;
+let activeEmergSR=null, emergRestartT=null;
 let bgPrevFrame=null, bgAlertCooldown=0;
 let bgGuardOn=true, bgEmergOn=true;
 let cocoModel=null, mlReady=false;
@@ -973,6 +1067,7 @@ if(id==='faceScreen') startEyes();
 else stopEyes();
 if(id==='chatScreen') renderSidebar();
 if(id==='settingsScreen') loadSettUI();
+if(id==='devScreen') devScreenInit();
 }
 function getBest(){return[...MODELS].filter(m=>keys[m.k]&&!skip[m.name]).sort((a,b)=>b.tier-a.tier);}
 async function callAI(msg, cb, sys){
@@ -1083,10 +1178,15 @@ return t.replace(/[\u{1F000}-\u{1FFFF}]/gu,'').replace(/[\u2600-\u27FF]/g,'')
 }
 function getBritishVoice(){
 const v=window.speechSynthesis?.getVoices()||[];
-for(const n of['Google UK English Male','Microsoft George','Microsoft Ryan','Daniel','Arthur']){
-const f=v.find(x=>x.name===n||x.name.startsWith(n));if(f)return f;
+// Priority: exact male names first, then any male-sounding name
+const maleNames=['Google UK English Male','Microsoft George','Microsoft Ryan','Google US English','Daniel','Arthur','Alex','Fred','Bruce','Ralph','Junior','Albert'];
+for(const n of maleNames){
+  const f=v.find(x=>x.name===n||x.name.startsWith(n));if(f)return f;
 }
-return v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang.startsWith('en'))||v[0];
+// Fallback: any voice with 'male' in name or en-GB
+const male=v.find(x=>/male/i.test(x.name)&&x.lang.startsWith('en'));
+if(male) return male;
+return v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang==='en-US'&&x.localService)||v.find(x=>x.lang.startsWith('en'))||v[0];
 }
 function speak(text,onDone){
 if(!text) return;
@@ -1165,10 +1265,12 @@ function toggleVoice(){botVoiceOn?stopVoice():startVoice();}
 function startVoice(){
 if(!SR){alert('Voice requires Chrome browser!');return;}
 botVoiceOn=true;
+wakeWordMode=true; wakeActiveUntil=0; clearTimeout(wakeExpireT);
+stopBgEmergency(); // kill emergency SR so only one SR runs at a time
 const btn=document.getElementById('voiceBtn');
 btn.textContent='🔴 ON';btn.style.background='rgba(255,68,68,0.2)';btn.style.color='var(--r)';btn.style.border='1px solid var(--r)';
 document.getElementById('voiceStatus').textContent='ON';document.getElementById('voiceStatus').style.color='var(--gr)';
-setPill('pillVoice',true);setListenLbl('● LISTENING...');
+setPill('pillVoice',true);setListenLbl('SAY HEY BRO');setSub('');
 startIdleWatch();
 startBgEmergency();
 if(!bgCamOn) toggleBgCam();
@@ -1180,6 +1282,11 @@ listenLoop();
 }
 function stopVoice(){
 botVoiceOn=false;clearInterval(idleCheckT);stopAutoNav();
+clearTimeout(listenLoopT); listenLoopT=null;
+wakeWordMode=true; clearTimeout(wakeExpireT); wakeExpireT=null;
+if(activeBotSR){ try{activeBotSR.abort();}catch(e){} activeBotSR=null; }
+stopBgEmergency();
+if(bgEmergOn) emergRestartT=setTimeout(listenEmerg,5000);
 clearInterval(bgDetectT);clearInterval(bgMotionT);
 setPill('pillDetect',false);setPill('pillGuard',false);setPill('pillNav',false);
 const btn=document.getElementById('voiceBtn');
@@ -1192,29 +1299,148 @@ clearInterval(bgMotionT);setPill('pillGuard',false);
 clearInterval(bgDetectT);setPill('pillDetect',false);
 bgPrevFrame=null;
 }
+// ── Wake word helpers ────────────────────────────────────────
+function activateWake(){
+  wakeWordMode=false;
+  wakeActiveUntil=Date.now()+30000;
+  clearTimeout(wakeExpireT);
+  wakeExpireT=setTimeout(deactivateWake,30000);
+  setListenLbl('LISTENING');
+  setEmotion('happy');
+  resetIdle();
+}
+function extendWake(){
+  // called on each command — resets 30s timer silently in background
+  wakeActiveUntil=Date.now()+30000;
+  clearTimeout(wakeExpireT);
+  wakeExpireT=setTimeout(deactivateWake,30000);
+  // No timer shown on screen — just keep listening
+}
+function deactivateWake(){
+  wakeWordMode=true;
+  wakeActiveUntil=0;
+  clearTimeout(wakeExpireT);
+  setListenLbl('SAY HEY BRO');
+  setSub('');
+  setEmotion('neutral');
+  // Trigger auto-nav after going back to wake mode
+  if(sett.autoNav&&rOK&&!isIdle){isIdle=true;startAutoNav();}
+}
+// ── Main listen loop ─────────────────────────────────────────
 function listenLoop(){
+clearTimeout(listenLoopT); listenLoopT=null;
 if(!botVoiceOn) return;
 if(intruderAlertRunning) return;
+if(activeBotSR){ try{activeBotSR.abort();}catch(e){} activeBotSR=null; }
 let got=false;
 const r=new SR();
-r.lang=sett.lang||'en-US';r.continuous=false;r.interimResults=false;r.maxAlternatives=1;
+activeBotSR=r;
+r.lang=sett.lang||'en-US';r.continuous=false;r.interimResults=false;r.maxAlternatives=3;
 r.onresult=(e)=>{
-got=true;resetIdle();
-const cmd=e.results[0][0].transcript.trim();
-if(!cmd||cmd.length<2){if(botVoiceOn)setTimeout(listenLoop,400);return;}
-if(/disable voice|stop listening/i.test(cmd)){setSub('Voice off.');speak('Voice disabled.',stopVoice);return;}
-setListenLbl('● THINKING...');setSub('Thinking...');setEmotion('thinking');
-callAI(cmd,(reply)=>{
-setSub(reply);setEmotion(reply);handleRobotCmds(reply);
-saveMem(reply.substring(0,200));
-setListenLbl('● SPEAKING...');
-// Tiny yield so subtitle renders before speech starts
-requestAnimationFrame(()=>speak(reply,()=>{setListenLbl('● LISTENING...');if(botVoiceOn)setTimeout(listenLoop,500);}));
-});
+  got=true;
+  let best='',bestConf=0;
+  for(let i=0;i<e.results[0].length;i++){
+    const alt=e.results[0][i];
+    if(alt.confidence>=bestConf){bestConf=alt.confidence;best=alt.transcript.trim();}
+  }
+  const raw=best||e.results[0][0].transcript.trim();
+  if(!raw||raw.length<2){listenLoopT=setTimeout(listenLoop,200);return;}
+
+  // ── WAKE WORD CHECK ──
+  const isWakeWord=/hey\s*bro|hey\s*bot|yo\s*bro/i.test(raw);
+
+  if(wakeWordMode){
+    // Correct wake word: must have Hey Bro PLUS a command in same sentence
+    const wakeCmd = raw.replace(/^(hey\s*bro|yo\s*bro|hey\s*bot)[,\s]*/i,'').trim();
+    if(isWakeWord && wakeCmd.length > 1){
+      // Hey Bro + command together — activate and process command
+      activateWake();
+      // Set listen label to show active
+      setListenLbl('🟢 LISTENING');
+      // Process the command directly
+      const cmd = wakeCmd;
+      if(/disable voice|stop listening|voice off/i.test(cmd)){setSub('Voice off.');speak('Okay, going quiet.',stopVoice);return;}
+      if(handleAgentAction(cmd)){extendWake();listenLoopT=setTimeout(listenLoop,300);return;}
+      setListenLbl('🤔 THINKING...');setSub('...');setEmotion('thinking');
+      callAI(cmd,(reply)=>{
+        setSub(reply);setEmotion(reply);handleRobotCmds(reply);saveMem(reply.substring(0,200));
+        setListenLbl('🗣 SPEAKING...');
+        requestAnimationFrame(()=>speak(reply,()=>{extendWake();listenLoopT=setTimeout(listenLoop,200);}));
+      });
+    } else {
+      // No Hey Bro or Hey Bro alone — ignore silently, keep listening
+      listenLoopT=setTimeout(listenLoop,200);
+    }
+    return;
+  }
+
+  // ── ACTIVE COMMAND MODE ──
+  // Check if still within 30s active window
+  if(Date.now()>wakeActiveUntil){
+    deactivateWake();
+    listenLoopT=setTimeout(listenLoop,200);
+    return;
+  }
+  extendWake(); // reset 30s timer on each command
+  resetIdle();
+
+  // Strip "hey bro" prefix if they said it again
+  const cmd=raw.replace(/^(hey\s*bro|hey\s*bot|yo\s*bro)[,\s]*/i,'').trim()||raw;
+
+  if(/disable voice|stop listening|voice off/i.test(cmd)){setSub('Voice off.');speak('Okay, going quiet.',stopVoice);return;}
+  // Speaker self-identification: "I am John" / "my name is John" / "it's John"
+  const speakerMatch = cmd.match(/^(?:i am|my name is|it'?s|this is)\s+([A-Za-z]+)/i);
+  if(speakerMatch){
+    const spName = speakerMatch[1];
+    const knownF = knownFaces.find(f=>f.name.toLowerCase()===spName.toLowerCase()||( f.nickname&&f.nickname.toLowerCase()===spName.toLowerCase()));
+    if(knownF){
+      currentSpeaker = knownF.callName||knownF.name;
+      const greet = knownF.callName||('Hello '+knownF.name+'!');
+      setSub(greet); speak(greet);
+      setTimeout(()=>{if(currentSpeaker===knownF.name||currentSpeaker===knownF.callName) currentSpeaker=null;},120000);
+    } else {
+      currentSpeaker = spName;
+      speak('Got it, hello '+spName+'!');
+      setTimeout(()=>{if(currentSpeaker===spName) currentSpeaker=null;},120000);
+    }
+    extendWake(); listenLoopT=setTimeout(listenLoop,300);
+    return;
+  }
+
+  // Vision-aware commands
+  if(/what.*(see|look|detect|camera|front|around)|who.*there|any.*person|anyone|show.*me|describe|scan/i.test(cmd)&&(visionOn||visionLastFrame)){
+    setListenLbl('👁 LOOKING...');setSub('Scanning...');setEmotion('thinking');
+    const detCtx=visionDetections.length?visionDetections.map(d=>(d.label||d.class)+'('+d.conf+'%)').join(', '):'nothing detected';
+    const visSys='You are Bro AI with active camera. COCO detects: '+detCtx+'. Registered faces: '+(knownFaces.map(f=>f.name).join(', ')||'none')+'. Answer concisely.';
+    callAI(cmd+(visionLastFrame?' (COCO: '+detCtx+')':'')  ,(reply)=>{
+      setSub(reply);setEmotion(reply);handleRobotCmds(reply);saveMem(reply.substring(0,200));
+      setListenLbl('🗣 SPEAKING...');
+      requestAnimationFrame(()=>speak(reply,()=>{extendWake();listenLoopT=setTimeout(listenLoop,200);}));
+    },visSys);
+    return;
+  }
+
+  // Try agent actions first — search, call, text, maps, etc
+  if(handleAgentAction(cmd)){
+    extendWake(); listenLoopT=setTimeout(listenLoop,300);
+    return;
+  }
+  setListenLbl('🤔 THINKING...');setSub('...');setEmotion('thinking');
+  callAI(cmd,(reply)=>{
+    setSub(reply);setEmotion(reply);handleRobotCmds(reply);saveMem(reply.substring(0,200));
+    setListenLbl('🗣 SPEAKING...');
+    requestAnimationFrame(()=>speak(reply,()=>{extendWake();listenLoopT=setTimeout(listenLoop,200);}));
+  });
 };
-r.onerror=()=>{if(botVoiceOn)setTimeout(listenLoop,1000);};
-r.onend=()=>{if(!got&&botVoiceOn)setTimeout(listenLoop,400);};
-try{r.start();}catch(ex){if(botVoiceOn)setTimeout(listenLoop,1500);}
+r.onerror=(e)=>{
+  activeBotSR=null;
+  if(botVoiceOn) listenLoopT=setTimeout(listenLoop,e.error==='network'?3000:600);
+};
+r.onend=()=>{
+  activeBotSR=null;
+  if(!got&&botVoiceOn) listenLoopT=setTimeout(listenLoop,200);
+};
+try{r.start();}catch(ex){activeBotSR=null;if(botVoiceOn)listenLoopT=setTimeout(listenLoop,1500);}
 }
 async function toggleBgCam(){
 if(bgCamOn){
@@ -1251,6 +1477,9 @@ let visionFaceLoop    = null;
 let visionHandsLoop   = null;
 let visionLastFrame   = null;
 let visionDetections  = [];
+let visionDetRunning  = false;
+let faceRecRunning    = false;
+let _detCanvas = null; // reusable canvas to avoid GC pressure
 let visionPanelOpen   = false;
 let faceApiReady      = false;
 let faceDescriptors   = [];
@@ -1352,78 +1581,91 @@ async function loadFaceApi(){ return; }
 async function buildFaceDescriptors(){ return; }
 function loadImgFromBase64(src){ return Promise.resolve(null); }
 async function runVisionDetect(){
-if(!visionOn) return;
-const vid = document.getElementById('visionVideo');
-const cv  = document.getElementById('visionOverlay');
-if(!vid||!cv||!vid.videoWidth) return;
-// Keep overlay canvas synced to video size
+if(!visionOn||visionDetRunning) return; // prevent overlap
+visionDetRunning=true;
+try{
+const vid=document.getElementById('visionVideo');
+const cv=document.getElementById('visionOverlay');
+if(!vid||!cv||!vid.videoWidth){visionDetRunning=false;return;}
+
+// Sync overlay canvas to video
 if(cv.width!==vid.videoWidth||cv.height!==vid.videoHeight){
   cv.width=vid.videoWidth; cv.height=vid.videoHeight;
 }
-// Capture frame for face recognition
-const snap = document.createElement('canvas');
-snap.width=320; snap.height=240;
-snap.getContext('2d').drawImage(vid,0,0,320,240);
-visionLastFrame = snap.toDataURL('image/jpeg',0.75);
-const ctx = cv.getContext('2d');
-ctx.clearRect(0,0,cv.width,cv.height);
-let dets = [];
-if(mlReady && cocoModel){
-try{
-// Detect on 640x480 downscale for CPU speed, scale boxes back to full display res
+
+// Reuse detection canvas — avoids creating/GC every 800ms
 const DW=640,DH=480;
-const detSnap=document.createElement('canvas');
-detSnap.width=DW;detSnap.height=DH;
-detSnap.getContext('2d').drawImage(vid,0,0,DW,DH);
-const preds = await cocoModel.detect(detSnap);
-const scX=cv.width/DW, scY=cv.height/DH;
-preds.forEach(p=>{
-if(p.score<0.4) return;
-const [x,y,w,h] = p.bbox;
-const isPerson = p.class==='person';
-dets.push({
-  class:p.class, type:isPerson?'person':'object',
-  conf:Math.round(p.score*100),
-  x:x*scX, y:y*scY, w:w*scX, h:h*scY,
-  label:p.class, status:isPerson?'person':'object',
-  color:isPerson?DET_COLORS.person:DET_COLORS.object
-});
-if(!objectLog.find(o=>o.name===p.class&&Date.now()-o.time<20000)){
-  objectLog.unshift({name:p.class,conf:Math.round(p.score*100),time:Date.now(),ts:new Date().toLocaleTimeString()});
-  if(objectLog.length>100) objectLog.splice(100);
-  localStorage.setItem('bobjlog',JSON.stringify(objectLog));
-  addDetLog('Detected: '+p.class+' ('+Math.round(p.score*100)+'%)');
+if(!_detCanvas){_detCanvas=document.createElement('canvas');_detCanvas.width=DW;_detCanvas.height=DH;}
+const dctx=_detCanvas.getContext('2d');
+dctx.drawImage(vid,0,0,DW,DH);
+
+// Save frame for face recognition (same canvas, good quality)
+visionLastFrame=_detCanvas.toDataURL('image/jpeg',0.85);
+
+const ctx=cv.getContext('2d');
+ctx.clearRect(0,0,cv.width,cv.height);
+let dets=[];
+
+if(mlReady&&cocoModel){
+  try{
+    const preds=await cocoModel.detect(_detCanvas);
+    const scX=cv.width/DW, scY=cv.height/DH;
+    preds.forEach(p=>{
+      if(p.score<0.3) return; // 0.3 threshold catches more objects
+      const [x,y,w,h]=p.bbox;
+      const isPerson=p.class==='person';
+      dets.push({
+        class:p.class, type:isPerson?'person':'object',
+        conf:Math.round(p.score*100),
+        x:x*scX, y:y*scY, w:w*scX, h:h*scY,
+        label:p.class, status:isPerson?'person':'object',
+        color:isPerson?DET_COLORS.person:DET_COLORS.object
+      });
+      if(!objectLog.find(o=>o.name===p.class&&Date.now()-o.time<15000)){
+        objectLog.unshift({name:p.class,conf:Math.round(p.score*100),time:Date.now(),ts:new Date().toLocaleTimeString()});
+        if(objectLog.length>200) objectLog.splice(200);
+        localStorage.setItem('bobjlog',JSON.stringify(objectLog));
+        addDetLog('Detected: '+p.class+' ('+Math.round(p.score*100)+'%)');
+      }
+    });
+    stats.detections+=preds.length;
+    const pc=dets.filter(d=>d.type==='person').length;
+    if(pc>0){
+      stats.faces++;stats.people=Math.max(stats.people,pc);learnPattern('camera_person','vision');
+      // Schedule face rec separately — never await inline to avoid blocking detection
+      if(!faceRecRunning&&Date.now()-faceRecCooldown>5000) setTimeout(runFaceRecognition,0);
+    }
+    visionDetections=dets;
+  }catch(e){console.log('[COCO]',e.message);}
+} else {
+  const vms=document.getElementById('visionMLStatus');
+  if(vms&&!mlReady) vms.textContent='⏳ Loading ML... (needs internet)';
 }
-});
-stats.detections += preds.length;
-const pc = dets.filter(d=>d.type==='person').length;
-if(pc>0){ stats.faces++; stats.people=Math.max(stats.people,pc); learnPattern('camera_person','vision'); }
-visionDetections = dets;
-}catch(e){ console.log('[COCO]',e.message); }
-} else if(visionLastFrame) {
-// ML not loaded — show AI-based detection hint
-const vms=document.getElementById('visionMLStatus');
-if(vms&&vms.textContent==='ML LOADING...') vms.textContent='No ML — use ASK to identify objects';
-}
-drawBoxes(ctx, visionDetections);
+drawBoxes(ctx,visionDetections);
 updateVisionPanel(visionDetections);
+}finally{visionDetRunning=false;}
 }
 async function runFaceRecognition(){
-if(!visionOn||!visionLastFrame) return;
+if(!visionOn||!visionLastFrame||faceRecRunning) return;
 const personDets=visionDetections.filter(d=>d.type==='person');
 if(!personDets.length) return;
 if(Date.now()-faceRecCooldown<5000) return;
 faceRecCooldown=Date.now();
+faceRecRunning=true;
+try{
 const faceNames=knownFaces.map(f=>f.name+(f.nickname?' ('+f.nickname+')':'')).join(', ');
 const hasKnown=knownFaces.length>0;
 const prompt=hasKnown
-?'Known people: '+faceNames+'. For each person in this image return ONLY a JSON array: [{"i":0,"status":"KNOWN","name":"..."} or {"i":0,"status":"UNKNOWN"}]. JSON only, no explanation.'
-:'Any people? Return ONLY: [{"i":0,"status":"UNKNOWN"}] per person or []. JSON only.';
+?'The LAST image is the live camera. Previous images are reference photos of known people: '+faceNames+'. For each person visible in the LAST image, return ONLY a JSON array like [{"i":0,"status":"KNOWN","name":"John"}]. If not matching any known person return {"status":"UNKNOWN"}. JSON array ONLY, no explanation, no markdown.'
+:'Look at this camera image. Are there any people? Return ONLY a JSON array: [{"i":0,"status":"UNKNOWN"}] for each person, or [] if no people. JSON only.';
 let result=null;
 if(puterReady&&typeof puter!=='undefined'){
 try{
-const imgs=[{type:'image_url',image_url:{url:visionLastFrame}},{type:'text',text:prompt}];
-if(hasKnown&&knownFaces[0]?.img) imgs.unshift({type:'image_url',image_url:{url:knownFaces[0].img}});
+// Build content: reference images first, then live frame, then prompt
+const imgs=[];
+if(hasKnown) knownFaces.slice(0,3).filter(f=>f.img).forEach(f=>imgs.push({type:'image_url',image_url:{url:f.img}}));
+imgs.push({type:'image_url',image_url:{url:visionLastFrame}});
+imgs.push({type:'text',text:prompt});
 const res=await puter.ai.chat([{role:'user',content:imgs}],{model:'gpt-4o-mini'});
 result=parseVisionJSON(typeof res==='string'?res:(res?.message?.content||''));
 }catch(e){}
@@ -1431,7 +1673,7 @@ result=parseVisionJSON(typeof res==='string'?res:(res?.message?.content||''));
 if(!result&&keys.g){
 try{
 const parts=[];
-if(hasKnown) knownFaces.slice(0,2).filter(f=>f.img).forEach(f=>
+if(hasKnown) knownFaces.slice(0,4).filter(f=>f.img).forEach(f=>
 parts.push({inline_data:{mime_type:'image/jpeg',data:f.img.split(',')[1]}}));
 parts.push({inline_data:{mime_type:'image/jpeg',data:visionLastFrame.split(',')[1]}});
 parts.push({text:hasKnown?'Known people: '+faceNames+'. Last image is live camera. Return ONLY JSON array per person: [{"i":0,"status":"KNOWN","name":"..."}] or UNKNOWN. JSON only.':prompt});
@@ -1463,18 +1705,24 @@ if(!objectLog.find(o=>o.name===label&&Date.now()-o.time<30000)){
   objectLog.unshift({name:label,conf:90,time:Date.now(),ts:new Date().toLocaleTimeString(),type:'face'});
   localStorage.setItem('bobjlog',JSON.stringify(objectLog));
 }
+// Update current speaker — this is who is physically in front of the camera
+currentSpeaker = label;
+setTimeout(()=>{ if(currentSpeaker===label) currentSpeaker=null; }, 60000); // clear after 60s
 return {...det,label,status:'known',color:DET_COLORS.known};
 }
 if(bgGuardOn&&Date.now()-bgAlertCooldown>15000){
 const hr=new Date().getHours();
 if(!sett.guardNight||(hr>=22||hr<7)){bgAlertCooldown=Date.now();onIntruder(100);}
 }
+currentSpeaker = null; // unknown person — don't assume who they are
 return {...det,label:'INTRUDER',status:'intruder',color:DET_COLORS.intruder};
 });
 visionDetections=updated;
 ctx.clearRect(0,0,cv.width,cv.height);
 drawBoxes(ctx,visionDetections);
 updateVisionPanel(visionDetections);
+}catch(e){console.log('[FaceRec]',e.message);}
+finally{faceRecRunning=false;}
 }
 async function loadMediaPipeHands(){
 mpHandsReady = true;
@@ -1623,7 +1871,7 @@ if(r.ok){const d=await r.json();ans=d?.candidates?.[0]?.content?.parts?.[0]?.tex
 }
 if(ans){replyEl.textContent=ans.trim();speak(ans.trim().substring(0,160));return;}
 }
-callAI(q,r=>{replyEl.textContent=r;speak(r.substring(0,160));},sysprompt);
+callAI(q,r=>{replyEl.textContent=r;replyEl.style.display='block';speak(r.substring(0,200));},sysprompt);
 }
 function parseVisionJSON(txt){
 if(!txt) return null;
@@ -1860,25 +2108,32 @@ doAlert();
 }
 function startBgEmergency(){
 if(!SR||!bgEmergOn) return;
-listenEmerg();
+stopBgEmergency();
+emergRestartT = setTimeout(listenEmerg, 2000);
+}
+function stopBgEmergency(){
+clearTimeout(emergRestartT); emergRestartT=null;
+if(activeEmergSR){ try{activeEmergSR.abort();}catch(e){} activeEmergSR=null; }
 }
 function listenEmerg(){
-if(!bgEmergOn) return;
-if(botVoiceOn){setTimeout(listenEmerg,5000);return;}
+clearTimeout(emergRestartT); emergRestartT=null;
+// Never run while main voice loop is active — avoids double SR / ding sounds
+if(!bgEmergOn || botVoiceOn) return;
 try{
-const r=new SR();r.lang=sett.lang||'en-US';r.continuous=false;r.interimResults=false;r.maxAlternatives=2;
-let got=false;
+const r=new SR();
+activeEmergSR=r;
+r.lang=sett.lang||'en-US';r.continuous=false;r.interimResults=false;r.maxAlternatives=1;
 r.onresult=(e)=>{
-got=true;
 let h='';for(let i=0;i<e.results[0].length;i++) h+=e.results[0][i].transcript.toLowerCase()+' ';
-const words=['help','emergency','sos','danger','intruder','attack','fire','call police','mayday'];
+const words=['help','emergency','sos','danger','intruder','attack','fire','mayday'];
 const hit=words.find(w=>h.includes(w));
 if(hit) onEmergWord(hit);
 };
-r.onend=()=>{if(bgEmergOn) setTimeout(listenEmerg,1200);};
-r.onerror=()=>{if(bgEmergOn) setTimeout(listenEmerg,4000);};
+// Long restart gap — avoids rapid SR restarts which cause ding sounds
+r.onend=()=>{ activeEmergSR=null; if(bgEmergOn&&!botVoiceOn) emergRestartT=setTimeout(listenEmerg,8000); };
+r.onerror=()=>{ activeEmergSR=null; if(bgEmergOn&&!botVoiceOn) emergRestartT=setTimeout(listenEmerg,10000); };
 r.start();
-}catch(e){if(bgEmergOn) setTimeout(listenEmerg,5000);}
+}catch(e){ activeEmergSR=null; if(bgEmergOn&&!botVoiceOn) emergRestartT=setTimeout(listenEmerg,12000); }
 }
 function onEmergWord(word){
 if(Date.now()<bgAlertCooldown+10000) return;
@@ -2108,7 +2363,7 @@ function loadChat(id){saveCurChat();curChatId=id;chatMsgCount=0;const c=chats.fi
 function deleteChat(id,ev){ev.stopPropagation();if(!confirm('Delete this chat?'))return;chats=chats.filter(c=>c.id!==id);if(curChatId===id){curChatId=null;document.getElementById('msgList').innerHTML='<div class="msg s">Chat deleted.</div>';}localStorage.setItem('bchats',JSON.stringify(chats));renderSidebar();}
 function renderSidebar(){chats=JSON.parse(localStorage.getItem('bchats')||'[]');const l=document.getElementById('sbList');if(!l)return;if(!chats.length){l.innerHTML='<div style="color:var(--g);font-size:12px;text-align:center;padding:20px;">No chats yet!</div>';return;}l.innerHTML='';chats.forEach(c=>{const d=document.createElement('div');d.className='sb-item'+(c.id===curChatId?' act':'');d.onclick=()=>loadChat(c.id);d.innerHTML=`<button class="sb-del" onclick="deleteChat(${c.id},event)">✕</button><div class="sb-name">${esc(c.name)}</div><div class="sb-date">${c.time}</div>`;l.appendChild(d);});}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');renderSidebar();}
-function loadSettUI(){
+function loadSettUI(){loadOwner();apInit();
 keys=JSON.parse(localStorage.getItem('bk')||'{}');
 sett=JSON.parse(localStorage.getItem('bs')||'{}');
 if(keys.g)    document.getElementById('kG')?.setAttribute('value',keys.g);
@@ -2148,7 +2403,7 @@ renderModelList();
 function saveSett(){sett.personality=document.getElementById('sPers').value;sett.voiceSpeed=parseFloat(document.getElementById('sSpeed').value);sett.lang=document.getElementById('sLang').value;localStorage.setItem('bs',JSON.stringify(sett));}
 function togSet(el,key){el.classList.toggle('on');sett[key]=el.classList.contains('on');localStorage.setItem('bs',JSON.stringify(sett));}
 function togGuardian(el){el.classList.toggle('on');bgGuardOn=el.classList.contains('on');setPill('pillGuard',bgGuardOn);speak(bgGuardOn?'Guardian mode enabled.':'Guardian mode disabled.');}
-function togEmergency(el){el.classList.toggle('on');bgEmergOn=el.classList.contains('on');if(bgEmergOn)listenEmerg();speak(bgEmergOn?'Emergency listener enabled.':'Emergency listener disabled.');}
+function togEmergency(el){el.classList.toggle('on');bgEmergOn=el.classList.contains('on');if(bgEmergOn){if(!botVoiceOn)emergRestartT=setTimeout(listenEmerg,2000);}else{stopBgEmergency();}speak(bgEmergOn?'Emergency listener enabled.':'Emergency listener disabled.');}
 function toggleAcc(id){
 const body=document.getElementById(id);
 const arrow=document.getElementById('arr'+id.replace('acc',''));
@@ -2352,7 +2607,8 @@ if(!existing.imgs) existing.imgs=[];
 shots.forEach(s=>{if(existing.imgs.length<15) existing.imgs.push(s);});
 speak('Updated '+name+'! Now have '+existing.imgs.length+' face samples for better accuracy.');
 } else {
-knownFaces.push({id:Date.now(),name,nickname:nick,callName:call||('Hello '+name+'!'),relation:rel,img,imgs:shots,time:new Date().toLocaleString()});
+const ph=(document.getElementById('fPhone')?.value||'').trim();
+knownFaces.push({id:Date.now(),name,nickname:nick,callName:call||('Hello '+name+'!'),relation:rel,phone:ph,img,imgs:shots,time:new Date().toLocaleString()});
 speak('Registered '+name+'! I will remember your face. Add more angles for accuracy.');
 }
 localStorage.setItem('bfaces',JSON.stringify(knownFaces));
@@ -2506,6 +2762,27 @@ mems=mems.filter(m=>m.id!==id);
 localStorage.setItem('bm',JSON.stringify(mems));
 renderMemory();
 }
+function editLearned(id){
+const l=selfLearned.find(x=>x.id===id);if(!l)return;
+const el=document.getElementById('ltext_'+id);if(!el)return;
+const inp=document.createElement('textarea');
+inp.value=l.fact;
+inp.style.cssText='width:100%;background:#0a0a1a;border:1px solid rgba(0,255,255,0.3);border-radius:6px;color:#fff;font-size:13px;padding:6px;resize:vertical;min-height:60px;font-family:Rajdhani,sans-serif;outline:none;';
+const row=document.getElementById('lrow_'+id);
+const savBtn=document.createElement('button');
+savBtn.textContent='✓';
+savBtn.style.cssText='background:var(--gr);color:#000;border:none;border-radius:6px;padding:3px 9px;cursor:pointer;font-size:13px;margin-top:4px;';
+savBtn.onclick=()=>{
+  const newFact=inp.value.trim();
+  if(newFact&&newFact!==l.fact){
+    const idx=selfLearned.findIndex(x=>x.id===id);
+    if(idx>=0){selfLearned[idx].fact=newFact;selfLearned[idx].time=new Date().toLocaleString()+' (edited)';}
+    localStorage.setItem('bsl',JSON.stringify(selfLearned));
+  }
+  renderMemory();
+};
+el.innerHTML='';el.appendChild(inp);el.appendChild(savBtn);inp.focus();
+}
 function deleteLearned(id){
 selfLearned=selfLearned.filter(l=>l.id!==id);
 localStorage.setItem('bsl',JSON.stringify(selfLearned));
@@ -2567,12 +2844,13 @@ const ll=document.getElementById('learnedList');
 if(ll){
 if(!selfLearned.length){ll.innerHTML='<div style="font-size:12px;color:#333;text-align:center;padding:10px;">Nothing learned yet. Keep chatting!</div>';
 }else{
-ll.innerHTML=selfLearned.map(l=>`
-<div style="display:flex;align-items:flex-start;gap:8px;background:rgba(136,0,255,0.04);border:1px solid rgba(136,0,255,0.1);border-radius:8px;padding:9px;margin-bottom:4px;">
+ll.innerHTML=selfLearned.map((l,idx)=>`
+<div style="display:flex;align-items:flex-start;gap:8px;background:rgba(136,0,255,0.04);border:1px solid rgba(136,0,255,0.1);border-radius:8px;padding:9px;margin-bottom:4px;" id="lrow_${l.id}">
 <div style="flex:1;">
-<div style="font-size:13px;color:#ddd;line-height:1.5;">${esc(l.fact)}</div>
-<div style="font-size:10px;color:var(--g);margin-top:3px;">${l.time||''} · Auto-learned</div>
+<div id="ltext_${l.id}" style="font-size:13px;color:#ddd;line-height:1.5;">${esc(l.fact)}</div>
+<div style="font-size:10px;color:var(--g);margin-top:3px;">${l.time||''} · ${l.source||'auto'}</div>
 </div>
+<button onclick="editLearned(${l.id})" style="background:none;border:1px solid rgba(0,255,255,0.2);color:var(--c);font-size:11px;border-radius:6px;padding:2px 7px;cursor:pointer;flex-shrink:0;margin-right:4px;">✏</button>
 <button onclick="deleteLearned(${l.id})" style="background:none;border:none;color:var(--r);font-size:16px;cursor:pointer;flex-shrink:0;">✕</button>
 </div>`).join('');
 }
@@ -2918,12 +3196,412 @@ if (userProfile.interests.length) relevant.push('User interests: ' + userProfile
 }
 return relevant.slice(0, 3).join('; ');
 }
+
+// ═══════════════════════════════════════════════════════════
+// CODE RUNNER — Safe sandboxed execution
+// ═══════════════════════════════════════════════════════════
+let devWorker = null;
+let devWorkerReady = false;
+let devRunTimeout = null;
+let pyodideLoading = false;
+let pyodideReady = false;
+
+function devScreenInit(){
+  // Tab key in editor inserts spaces instead of changing focus
+  const ed = document.getElementById('codeEditor');
+  if(ed && !ed._tabHandled){
+    ed._tabHandled = true;
+    ed.addEventListener('keydown', e=>{
+      if(e.key==='Tab'){
+        e.preventDefault();
+        const s=ed.selectionStart, end=ed.selectionEnd;
+        ed.value=ed.value.substring(0,s)+'  '+ed.value.substring(end);
+        ed.selectionStart=ed.selectionEnd=s+2;
+      }
+    });
+  }
+}
+
+function devLangChange(){
+  const lang = document.getElementById('devLang').value;
+  const ed = document.getElementById('codeEditor');
+  if(lang==='python'){
+    ed.placeholder = '# Python (powered by Pyodide)\n# Loads ~10MB first time — needs internet\n\nprint("Hello from Bro AI!")\n\nx = [1,2,3,4,5]\nprint("Sum:", sum(x))\nprint("Square each:", [i**2 for i in x])';
+    setDevStatus('Python mode — will load Pyodide on first run');
+  } else {
+    ed.placeholder = '// JavaScript — runs instantly\n\nconsole.log("Hello from Bro AI!");\n\nconst arr = [5,3,1,4,2];\narr.sort((a,b)=>a-b);\nconsole.log("Sorted:", arr);';
+    setDevStatus('JS mode — ready');
+  }
+}
+
+function setDevStatus(msg, color){
+  const el = document.getElementById('devStatus');
+  if(el){ el.textContent=msg; el.style.color=color||'var(--g)'; }
+}
+
+function devSetOutput(txt, isErr){
+  const el = document.getElementById('codeOutput');
+  if(!el) return;
+  el.textContent = txt;
+  el.className = isErr ? 'err' : '';
+}
+
+function devAppendOutput(txt){
+  const el = document.getElementById('codeOutput');
+  if(!el) return;
+  el.textContent += txt;
+  el.scrollTop = el.scrollHeight;
+}
+
+function devClear(){
+  document.getElementById('codeEditor').value = '';
+  devSetOutput('Cleared.', false);
+  setDevStatus('READY');
+}
+
+// ── JavaScript runner ──────────────────────────────────────
+function runJS(code){
+  setDevStatus('⚙ RUNNING...', 'var(--gr)');
+  devSetOutput('');
+  const logs = [];
+  // Capture console.log safely
+  const fakeConsole = {
+    log:   (...a) => logs.push(a.map(x=>typeof x==='object'?JSON.stringify(x,null,2):String(x)).join(' ')),
+    error: (...a) => logs.push('ERROR: '+a.map(x=>String(x)).join(' ')),
+    warn:  (...a) => logs.push('WARN: '+a.map(x=>String(x)).join(' ')),
+    info:  (...a) => logs.push(a.map(x=>String(x)).join(' ')),
+  };
+  // 10s hard timeout via a flag
+  let timedOut = false;
+  const tmo = setTimeout(()=>{ timedOut=true; }, 10000);
+  try{
+    // Wrap in async IIFE to support top-level await if needed
+    const fn = new Function('console','setTimeout','setInterval',
+      // disable dangerous globals
+      'fetch',
+      code + '\n;return undefined;'
+    );
+    const result = fn(
+      fakeConsole,
+      // safe setTimeout — no-op if timed out
+      (cb,d)=>{ if(!timedOut) return setTimeout(cb,d); },
+      (cb,d)=>{ if(!timedOut) return setInterval(cb,d); },
+      // allow fetch
+      window.fetch.bind(window)
+    );
+    clearTimeout(tmo);
+    // If returns a promise, wait for it
+    if(result && typeof result.then === 'function'){
+      result.then(v=>{
+        if(v!==undefined) logs.push('→ '+JSON.stringify(v));
+        devSetOutput(logs.join('\n')||'(no output)', false);
+        setDevStatus('✓ DONE', 'var(--gr)');
+      }).catch(e=>{
+        devSetOutput('Error: '+e.message, true);
+        setDevStatus('✗ ERROR', 'var(--r)');
+      });
+      return;
+    }
+    if(result!==undefined) logs.push('→ '+JSON.stringify(result));
+    devSetOutput(logs.join('\n')||'(no output)', false);
+    setDevStatus('✓ DONE', 'var(--gr)');
+  } catch(e){
+    clearTimeout(tmo);
+    devSetOutput('Error: '+e.message, true);
+    setDevStatus('✗ ERROR', 'var(--r)');
+  }
+}
+
+// ── Python runner via Web Worker + Pyodide ─────────────────
+function runPython(code){
+  // Kill any existing worker first
+  if(devWorker){
+    devWorker.terminate();
+    devWorker = null;
+    devWorkerReady = false;
+  }
+  clearTimeout(devRunTimeout);
+  setDevStatus('⏳ Starting Python...', 'var(--o)');
+  devSetOutput('Loading Python environment...\n(~10MB download, one time only)');
+
+  // Build the worker as a Blob — no file needed
+  const workerCode = `
+    let pyodide = null;
+    let ready = false;
+
+    self.onmessage = async function(e){
+      if(e.data.type === 'run'){
+        if(!pyodide){
+          try{
+            self.postMessage({type:'status', msg:'Loading Pyodide...'});
+            importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+            pyodide = await loadPyodide({
+              indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'
+            });
+            // Redirect Python stdout/stderr to messages
+            pyodide.runPython(\`
+import sys, io
+class MsgWriter(io.TextIOBase):
+    def __init__(self, t):
+        self._t = t
+    def write(self, s):
+        if s and s.strip():
+            import js
+            js.self.postMessage(js.Object.fromEntries(js.Array.of(
+                js.Array.of('type', 'print'),
+                js.Array.of('msg', s)
+            )))
+        return len(s)
+sys.stdout = MsgWriter('stdout')
+sys.stderr = MsgWriter('stderr')
+\`);
+            ready = true;
+            self.postMessage({type:'ready'});
+          } catch(err){
+            self.postMessage({type:'error', msg:'Failed to load Python: '+err.message});
+            return;
+          }
+        }
+        try{
+          self.postMessage({type:'status', msg:'Running...'});
+          const result = pyodide.runPython(e.data.code);
+          self.postMessage({type:'done', result: result !== undefined ? String(result) : null});
+        } catch(err){
+          self.postMessage({type:'error', msg: err.message || String(err)});
+        }
+      }
+    };
+  `;
+
+  try{
+    const blob = new Blob([workerCode], {type:'application/javascript'});
+    const url = URL.createObjectURL(blob);
+    devWorker = new Worker(url);
+    URL.revokeObjectURL(url); // free memory immediately
+
+    let output = '';
+
+    devWorker.onmessage = (e) => {
+      const d = e.data;
+      if(d.type==='status'){
+        setDevStatus('⏳ '+d.msg, 'var(--o)');
+        if(d.msg==='Running...') devSetOutput('');
+      } else if(d.type==='ready'){
+        devWorkerReady = true;
+        setDevStatus('▶ Python ready', 'var(--gr)');
+      } else if(d.type==='print'){
+        output += d.msg;
+        devSetOutput(output || '(running...)', false);
+      } else if(d.type==='done'){
+        clearTimeout(devRunTimeout);
+        if(d.result !== null && d.result !== 'None') output += '\n→ '+d.result;
+        devSetOutput(output.trim() || '(no output)', false);
+        setDevStatus('✓ DONE', 'var(--gr)');
+      } else if(d.type==='error'){
+        clearTimeout(devRunTimeout);
+        devSetOutput('Python Error:\n'+d.msg, true);
+        setDevStatus('✗ ERROR', 'var(--r)');
+      }
+    };
+
+    devWorker.onerror = (e) => {
+      clearTimeout(devRunTimeout);
+      // Worker crashed — page is fine
+      devSetOutput('Worker error: '+(e.message||'unknown error')+'\n\nPython may not be available on this device/browser.', true);
+      setDevStatus('✗ WORKER FAILED', 'var(--r)');
+      devWorker = null;
+      devWorkerReady = false;
+    };
+
+    // Start running
+    devWorker.postMessage({type:'run', code});
+
+    // 30s timeout — kills worker if code hangs, page stays alive
+    devRunTimeout = setTimeout(()=>{
+      if(devWorker){
+        devWorker.terminate();
+        devWorker = null;
+        devWorkerReady = false;
+      }
+      devSetOutput('⏱ Timeout: code took longer than 30 seconds and was stopped.', true);
+      setDevStatus('⏱ TIMEOUT', 'var(--r)');
+    }, 30000);
+
+  } catch(e){
+    // Worker creation failed (e.g. blocked by browser)
+    devSetOutput('Cannot create Worker: '+e.message+'\n\nTry Chrome or Edge browser.', true);
+    setDevStatus('✗ NO WORKER', 'var(--r)');
+  }
+}
+
+// ── Main run dispatcher ────────────────────────────────────
+function devRun(){
+  const code = (document.getElementById('codeEditor').value||'').trim();
+  if(!code){ devSetOutput('Nothing to run.', false); return; }
+  const lang = document.getElementById('devLang').value;
+  if(lang==='python') runPython(code);
+  else runJS(code);
+}
+
+// ── AI writes code ─────────────────────────────────────────
+function devAskAI(){
+  const inp = document.getElementById('devAskInput');
+  const q = (inp?.value||'').trim();
+  if(!q){ inp?.focus(); return; }
+  const lang = document.getElementById('devLang').value;
+  const langName = lang==='python'?'Python':'JavaScript';
+  setDevStatus('🤖 AI writing...', 'var(--c)');
+  devSetOutput('AI is writing your code...');
+  const sys = 'You are a code generator. Write ONLY clean '+langName+' code with no markdown, no backticks, no explanation. Just the raw code that can be executed directly. Keep it concise and working.';
+  callAI('Write '+langName+' code that: '+q, (reply)=>{
+    // Strip any markdown code fences if AI adds them
+    let code = reply.trim()
+      .replace(/^```[\w]*\n?/,'').replace(/```$/,'').trim();
+    document.getElementById('codeEditor').value = code;
+    if(inp) inp.value = '';
+    setDevStatus('✓ Code ready — press RUN', 'var(--gr)');
+    devSetOutput('Code written by AI. Press ▶ RUN to execute.');
+  }, sys);
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// AGENT ACTIONS — Real device-level actions via browser APIs
+// ══════════════════════════════════════════════════════════════
+function handleAgentAction(cmd){
+  // Returns true if an agent action was handled, false if should go to AI
+  const q = cmd.toLowerCase().trim();
+
+  // ── WEB SEARCH ──────────────────────────────────────────
+  const searchMatch = cmd.match(/(?:search|google|look up|find|search for|search about)\s+(.+)/i);
+  if(searchMatch){
+    const query = searchMatch[1].trim();
+    speak('Searching for '+query, ()=>{
+      window.open('https://www.google.com/search?q='+encodeURIComponent(query), '_blank');
+    });
+    setSub('🔍 Searching: '+query); return true;
+  }
+
+  // ── YOUTUBE ──────────────────────────────────────────────
+  const ytMatch = cmd.match(/(?:play|youtube|search youtube|open youtube)\s+(.+)/i);
+  if(ytMatch){
+    const query = ytMatch[1].trim();
+    speak('Opening YouTube for '+query, ()=>{
+      window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(query), '_blank');
+    });
+    setSub('▶ YouTube: '+query); return true;
+  }
+
+  // ── CALL ──────────────────────────────────────────────────
+  const callMatch = cmd.match(/(?:call|ring|dial|phone)\s+(.+)/i);
+  if(callMatch){
+    const contact = callMatch[1].trim();
+    // Check contacts in knownFaces for phone numbers
+    const face = knownFaces.find(f=>
+      f.name.toLowerCase().includes(contact.toLowerCase())||
+      (f.nickname&&f.nickname.toLowerCase().includes(contact.toLowerCase()))
+    );
+    if(face&&face.phone){
+      speak('Calling '+face.name, ()=>{ window.open('tel:'+face.phone); });
+      setSub('📞 Calling '+face.name); return true;
+    } else {
+      // Try to parse as number
+      const numMatch = contact.match(/[\d\s\+\-\(\)]{6,}/);
+      if(numMatch){
+        const num = numMatch[0].replace(/\s/g,'');
+        speak('Calling '+num, ()=>{ window.open('tel:'+num); });
+        setSub('📞 Calling '+num); return true;
+      }
+      speak('I don\'t have a phone number for '+contact+'. Add their number in Registered Faces.');
+      setSub('❌ No number for '+contact); return true;
+    }
+  }
+
+  // ── SMS / TEXT ────────────────────────────────────────────
+  const smsMatch = cmd.match(/(?:text|sms|send message|message|send a message)\s+(?:to\s+)?(\w+)\s+(?:saying\s+|that\s+|:?\s*)(.+)/i);
+  if(smsMatch){
+    const contact = smsMatch[1].trim();
+    const body = smsMatch[2].trim();
+    const face = knownFaces.find(f=>
+      f.name.toLowerCase().includes(contact.toLowerCase())||
+      (f.nickname&&f.nickname.toLowerCase().includes(contact.toLowerCase()))
+    );
+    if(face&&face.phone){
+      speak('Sending message to '+face.name, ()=>{
+        window.open('sms:'+face.phone+'?body='+encodeURIComponent(body));
+      });
+      setSub('💬 SMS to '+face.name+': '+body.substring(0,30)); return true;
+    } else {
+      speak('I don\'t have '+contact+'\'s number. You can add it in Registered Faces settings.');
+      setSub('❌ No number for '+contact); return true;
+    }
+  }
+
+  // ── WHATSAPP ──────────────────────────────────────────────
+  const waMatch = cmd.match(/(?:whatsapp|whats app|wa)\s+(?:to\s+)?(\w+)\s+(?:saying\s+|that\s+|:?\s*)(.+)/i);
+  if(waMatch){
+    const contact = waMatch[1].trim();
+    const body = waMatch[2].trim();
+    const face = knownFaces.find(f=>f.name.toLowerCase().includes(contact.toLowerCase()));
+    if(face&&face.phone){
+      const num = face.phone.replace(/[^0-9]/g,'');
+      speak('Opening WhatsApp for '+face.name, ()=>{
+        window.open('https://wa.me/'+num+'?text='+encodeURIComponent(body), '_blank');
+      });
+      setSub('💬 WhatsApp: '+face.name); return true;
+    } else {
+      speak('No phone number for '+contact+' in my contacts.');
+      return true;
+    }
+  }
+
+  // ── MAPS / NAVIGATE ───────────────────────────────────────
+  const mapsMatch = cmd.match(/(?:navigate to|directions to|take me to|open maps|where is|find)\s+(.+)/i);
+  if(mapsMatch){
+    const place = mapsMatch[1].trim();
+    speak('Opening maps for '+place, ()=>{
+      window.open('https://maps.google.com/?q='+encodeURIComponent(place), '_blank');
+    });
+    setSub('🗺 Maps: '+place); return true;
+  }
+
+  // ── EMAIL ──────────────────────────────────────────────────
+  const emailMatch = cmd.match(/(?:email|mail|send email)\s+(?:to\s+)?(\S+)\s+(?:about|subject\s+)?(.{3,})/i);
+  if(emailMatch){
+    const to = emailMatch[1].trim();
+    const subj = emailMatch[2].trim();
+    speak('Opening email to '+to, ()=>{
+      window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj), '_blank');
+    });
+    setSub('📧 Email: '+to); return true;
+  }
+
+  // ── OPEN WEBSITE ──────────────────────────────────────────
+  const webMatch = cmd.match(/(?:open|go to|visit)\s+(?:website\s+)?([a-zA-Z0-9\-]+\.[a-zA-Z]{2,}.*)/i);
+  if(webMatch){
+    let url = webMatch[1].trim();
+    if(!url.startsWith('http')) url = 'https://'+url;
+    speak('Opening '+webMatch[1], ()=>{ window.open(url, '_blank'); });
+    setSub('🌐 Opening: '+webMatch[1]); return true;
+  }
+
+  // ── WEATHER ──────────────────────────────────────────────
+  if(/(?:what'?s? the weather|weather today|weather forecast|is it going to rain)/i.test(cmd)){
+    speak('Opening weather', ()=>{
+      window.open('https://www.google.com/search?q=weather+today', '_blank');
+    });
+    setSub('🌤 Weather'); return true;
+  }
+
+  return false; // not an agent command — pass to AI
+}
+
 function buildSystemContext(pers, sys) {
 if (sys) return sys;
 const memCtx = mems.slice(0, 6).map(m => m.text).join(' | ');
 const learnCtx = selfLearned.slice(0, 8).map(l => l.fact).join(' | ');
 const profileCtx = [
-userProfile.name ? 'Name: ' + userProfile.name : '',
+(()=>{try{const op=JSON.parse(localStorage.getItem('bownerprofile')||'{}');if(op.name)return'Owner: '+op.name+(op.job?' ('+op.job+')':'')+(op.location?', '+op.location:'');}catch(e){}return userProfile.name?'Name: '+userProfile.name:'';})() ,
 userProfile.job ? 'Job: ' + userProfile.job : '',
 userProfile.interests.length ? 'Likes: ' + userProfile.interests.slice(-4).join(', ') : '',
 userProfile.dislikes.length ? 'Dislikes: ' + userProfile.dislikes.slice(-3).join(', ') : '',
@@ -2939,15 +3617,28 @@ const ch=chats.find(ch=>ch.id===curChatId);
 if(!ch||!ch.msgs||!ch.msgs.length) return '';
 return ch.msgs.slice(-8).map(m=>(m.role==='user'?'User':'Bro')+': '+m.text.substring(0,100)).join('\n');
 })();
+// Build vision context for the AI
+const camActive = visionOn || bgCamOn;
+const detList = visionDetections.length
+  ? visionDetections.map(d=>(d.label||d.class)+'('+d.conf+'%)').join(', ')
+  : 'nothing yet';
+const knownList = knownFaces.length ? knownFaces.map(f=>f.name+(f.nickname?' aka '+f.nickname:'')).join(', ') : 'none registered';
+const recentObjs = objectLog.slice(0,8).map(o=>o.name).join(', ') || 'none';
+const visionCtx = camActive
+  ? 'Camera ON. Currently seeing: '+detList+'. Recently seen: '+recentObjs+'. Registered faces: '+knownList+'.'
+  : 'Camera OFF. You can see if user opens Vision panel.';
 const sys_parts=[
-'You are Bro AI, a '+pers+' AI robot. Deep memory, learns from everything. Be concise. No emojis in spoken text.',
+'You are Bro AI, a '+pers+' AI robot companion with a camera and object detection. Deep memory, learns everything. Be concise. No emojis in spoken replies.',
+'VISION: '+visionCtx,
 'RECENT: '+(recentMsgs||'(start)'),
-'USER: '+(profileCtx||'Still learning.'),
+'OWNER: '+(userProfile.name?userProfile.name+' (device owner)':'Unknown — learning'),
+'CURRENT SPEAKER: '+(currentSpeaker||'Unknown - vision has not confirmed who is speaking'),
+'USER PROFILE: '+(profileCtx||'Still learning.'),
 'MEMORIES: '+(memCtx||'None.'),
 'LEARNED: '+(learnCtx||'None.'),
 'CORRECTIONS: '+(correction_ctx||'None.'),
 'CONTEXT: '+period+' routine: '+(routineCtx||'none')+'. '+adaptCtx,
-'RULES: Reference memories when relevant. Adapt tone. Never contradict corrections. Confirm new learnings briefly.',
+'RULES: IDENTITY RULE - When asked "who am I" or "what is my name", ONLY answer based on CURRENT SPEAKER field, never assume it is the owner unless face recognition confirmed it. If current speaker unknown, say so. Reference memories when relevant. Adapt tone.',
 'ROBOT CMDS: [MOVE_FORWARD][MOVE_BACKWARD][TURN_LEFT][TURN_RIGHT][STOP][HEAD_LEFT][HEAD_RIGHT][HEAD_CENTER][TILT_UP][TILT_DOWN]'
 ];
 return sys_parts.join(' | ');
@@ -2995,7 +3686,78 @@ if(window.speechSynthesis){
   if(window.speechSynthesis.onvoiceschanged!==undefined) window.speechSynthesis.onvoiceschanged=cacheVoices;
   setTimeout(cacheVoices,500);
 }
+// Pre-load TF.js + COCO-SSD silently in background so Vision is instant
+setTimeout(()=>{
+  if(!mlReady&&!cocoModel){
+    loadTF().then(ok=>{
+      if(ok) loadCocoSsd().then(ok2=>{
+        if(ok2) cocoSsd.load().then(m=>{
+          cocoModel=m; mlReady=true;
+          setPill('pillML',true);
+          const el=document.getElementById('mlStatusRow');
+          if(el){el.textContent='ML: READY ✓';el.style.color='var(--gr)';}
+          const vms=document.getElementById('visionMLStatus');
+          if(vms){vms.textContent='✓ COCO READY';vms.style.color='var(--gr)';}
+          addDetLog('ML pre-loaded and ready');
+        }).catch(()=>{});
+      });
+    });
+  }
+},3000); // 3s after page load — doesn't block startup
 setTimeout(initPuter, 1500);
 setInterval(checkReminders, 60000);</script>
+<script>
+// ── Owner Profile ─────────────────────────────────────────
+function loadOwner(){
+  const p=JSON.parse(localStorage.getItem('bownerprofile')||'{}');
+  const s=(id,v)=>{const el=document.getElementById(id);if(el&&v)el.value=v;};
+  s('opName',p.name);s('opAge',p.age);s('opLocation',p.location);
+  s('opJob',p.job);s('opInterests',p.interests);s('opAbout',p.about);
+}
+function saveOwner(){
+  const g=id=>document.getElementById(id)?.value?.trim()||'';
+  const p={name:g('opName'),age:g('opAge'),location:g('opLocation'),job:g('opJob'),interests:g('opInterests'),about:g('opAbout')};
+  localStorage.setItem('bownerprofile',JSON.stringify(p));
+  if(p.name) userProfile.name=p.name;
+  if(p.job)  userProfile.job=p.job;
+  if(p.location) userProfile.location=p.location;
+  if(p.interests){const arr=p.interests.split(',').map(s=>s.trim()).filter(Boolean);userProfile.interests=[...new Set([...userProfile.interests,...arr])];}
+  localStorage.setItem('bup',JSON.stringify(userProfile));
+}
+
+// ── Android Powers ────────────────────────────────────────
+function apInit(){
+  if(typeof AndroidBridge==='undefined') return;
+  document.getElementById('apSection').style.display='block';
+  try{
+    const s=JSON.parse(AndroidBridge.getAllSettings());
+    ['bgWake','boot','calls','messages','accessible','emergency','wakelock','location','screenRead','brightness','smartHome'].forEach(id=>{
+      const el=document.getElementById('apt_'+id);
+      if(el) el.className='ap-tog'+(s[id]!==false?' on':'');
+    });
+    const master=s.master!==false;
+    const btn=document.getElementById('apMasterBtn');
+    if(btn){btn.className='ap-master'+(master?'':' off');btn.textContent=master?'● ALL SYSTEMS ACTIVE':'○ ALL SYSTEMS OFF';}
+  }catch(e){}
+}
+function apTog(key,el){
+  if(typeof AndroidBridge==='undefined'){speak('Android powers only work in the APK.');return;}
+  const on=el.classList.contains('on');
+  el.className='ap-tog'+(on?'':' on');
+  AndroidBridge.setSetting(key,!on);
+  speak((on?'Disabled ':'Enabled ')+el.parentElement.querySelector('.ap-name').textContent.replace(/^[^a-zA-Z]*/,''));
+}
+function apMaster(){
+  if(typeof AndroidBridge==='undefined') return;
+  const btn=document.getElementById('apMasterBtn');
+  const on=btn.classList.contains('off');
+  AndroidBridge.setSetting('master',on);
+  btn.className='ap-master'+(on?'':' off');
+  btn.textContent=on?'● ALL SYSTEMS ACTIVE':'○ ALL SYSTEMS OFF';
+  document.querySelectorAll('.ap-tog').forEach(t=>t.className='ap-tog'+(on?' on':''));
+  speak(on?'All Android powers enabled.':'All systems shut down.');
+  if(on) AndroidBridge.startService(); else AndroidBridge.stopService();
+}
+</script>
 </body>
 </html>
