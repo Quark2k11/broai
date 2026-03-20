@@ -195,7 +195,7 @@ class BroService : LifecycleService() {
     // wakeWordMode=true  → only accepts "Hey Bro + command" together
     // wakeWordMode=false → accepts anything for 30s, each resets timer
     private fun handleSpeech(text: String) {
-        val wakePattern = Regex("^(hey\s*bro|yo\s*bro|hey\s*bot)[,\s]+(.+)", RegexOption.IGNORE_CASE)
+        val wakePattern = Regex("^(hey\\s*bro|yo\\s*bro|hey\\s*bot)[,\\s]+(.+)", RegexOption.IGNORE_CASE)
         val wakeMatch = wakePattern.find(text)
 
         if (wakeWordMode) {
@@ -228,7 +228,7 @@ class BroService : LifecycleService() {
     private fun processCommand(cmd: String) {
         val lower = cmd.lowercase()
         // Voice off
-        if (Regex("(?:turn off|disable|stop)\s*(?:the\s*)?(?:mic|voice|listening)", RegexOption.IGNORE_CASE).containsMatchIn(cmd)) {
+        if (Regex("(?:turn off|disable|stop)\\s*(?:the\\s*)?(?:mic|voice|listening)", RegexOption.IGNORE_CASE).containsMatchIn(cmd)) {
             speakOut("Okay going quiet.")
             micDisable()
             return
