@@ -1,5 +1,4 @@
 package com.quark.broai
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -16,7 +15,6 @@ import com.quark.broai.databinding.ActivityMainBinding
 import com.quark.broai.services.BroService
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var b: ActivityMainBinding
     private val PC = 100
     private val PERMS = mutableListOf(
@@ -39,7 +37,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
+        setupWebView()
+        checkPerms()
+    }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView() {
         b.webView.apply {
             settings.apply {
                 javaScriptEnabled = true
@@ -48,16 +51,18 @@ class MainActivity : AppCompatActivity() {
                 allowContentAccess = true
                 mediaPlaybackRequiresUserGesture = false
                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                cacheMode = WebSettings.LOAD_DEFAULT
-                userAgentString = "BroAI/10.0 Android"
+                cacheMode = WebSettings.LOAD_NO_CACHE
                 setSupportZoom(false)
                 builtInZoomControls = false
                 loadWithOverviewMode = true
                 useWideViewPort = true
                 databaseEnabled = true
                 setGeolocationEnabled(true)
+                javaScriptCanOpenWindowsAutomatically = true
+                // Chrome user agent so all browser APIs work including SpeechRecognition
+                userAgentString = "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
             }
-
+            // Auto grant mic, camera, location permissions
             webChromeClient = object : WebChromeClient() {
                 override fun onPermissionRequest(request: PermissionRequest) {
                     runOnUiThread { request.grant(request.resources) }
@@ -65,49 +70,36 @@ class MainActivity : AppCompatActivity() {
                 override fun onGeolocationPermissionsShowPrompt(
                     origin: String, callback: GeolocationPermissions.Callback
                 ) { callback.invoke(origin, true, false) }
+                override fun onConsoleMessage(msg: ConsoleMessage): Boolean {
+                    android.util.Log.d("BroAI_JS", msg.message())
+                    return true
+                }
             }
-
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
-                    // Inject bridge connector after page loads
-                    // This connects HTML voice button to Android mic
-                    val js = """
-                        (function() {
-                            // Override toggleVoice to connect to Android service
-                            var origToggleVoice = window.toggleVoice;
-                            window.toggleVoice = function() {
-                                if (typeof AndroidBridge !== 'undefined') {
-                                    if (window.botVoiceOn) {
-                                        AndroidBridge.micDisable();
-                                    } else {
-                                        AndroidBridge.micEnable();
-                                    }
-                                }
-                                if (origToggleVoice) origToggleVoice();
-                            };
-                            console.log('[BroAI] Android bridge connected');
-                        })();
-                    """.trimIndent()
-                    view.evaluateJavascript(js, null)
+                    android.util.Log.d("BroAI", "Page loaded: $url")
                 }
                 override fun shouldOverrideUrlLoading(
                     view: WebView, request: WebResourceRequest
                 ): Boolean {
                     val url = request.url.toString()
-                    if (!url.startsWith("file://") && !url.startsWith("https://") && !url.startsWith("http://")) {
+                    if (url.startsWith("tel:") || url.startsWith("sms:") || url.startsWith("mailto:")) {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                         return true
                     }
                     return false
                 }
+                override fun onReceivedError(
+                    view: WebView, request: WebResourceRequest, error: WebResourceError
+                ) {
+                    android.util.Log.e("BroAI", "Error: ${error.description}")
+                }
             }
-
             addJavascriptInterface(AndroidBridge(this@MainActivity), "AndroidBridge")
-            loadUrl("file:///android_asset/broai_v10.html")
+            // Load the correct GitHub Pages URL
+            loadUrl("https://quark2k11.github.io/broai/")
         }
-
-        checkPerms()
     }
 
     private fun checkPerms() {
@@ -118,9 +110,7 @@ class MainActivity : AppCompatActivity() {
         else startBroService()
     }
 
-    fun startBroService() {
-        val prefs = getSharedPreferences(BroAIApp.PREFS, MODE_PRIVATE)
-        if (!prefs.getBoolean(BroAIApp.K_MASTER, true)) return
+    private fun startBroService() {
         val i = Intent(this, BroService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i)
         else startService(i)
@@ -130,11 +120,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(rc, p, r)
         if (rc == PC) startBroService()
     }
-
-    override fun onBackPressed() {
-        if (b.webView.canGoBack()) b.webView.goBack() else super.onBackPressed()
-    }
-
+    override fun onBackPressed() { if (b.webView.canGoBack()) b.webView.goBack() else super.onBackPressed() }
     override fun onResume()  { super.onResume();  b.webView.onResume() }
     override fun onPause()   { super.onPause();   b.webView.onPause() }
 }
